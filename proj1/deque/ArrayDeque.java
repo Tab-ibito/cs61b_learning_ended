@@ -88,6 +88,9 @@ public class ArrayDeque<T> {
         return removed;
     }
     public T get(int index){
+        if (index<first || index>=last){
+            return null;
+        }
         return items[index-first];
     }
 }
