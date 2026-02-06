@@ -12,7 +12,7 @@ public class Collatz {
         } else {
             return n * 2;
         }
-    }git add .
+    }
 
     public static void main(String[] args) {
         int n = 5;
