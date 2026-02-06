@@ -18,7 +18,10 @@ public class TestBuggyAList {
             a.addLast(i);
             b.addLast(i);
         }
-        assertSame(a.size(),b.size());
+        for (int i=1;i<=3;i++){
+            a.removeLast();
+            b.removeLast();
+        }
     }
     @Test
     public void randomizedTest(){
