@@ -28,24 +28,24 @@ public class ArrayDeque<T> {
         }
     }
     public void addFirst(T item){
-        if(first<0){
+        first--;
+        items[first]=item;
+        size++;
+        if(first==0){
             int[] res=resize(size,false);
             first=res[0];
             last=res[1];
         }
-        first--;
-        items[first]=item;
-        size++;
     }
     public void addLast(T item){
+        items[last]=item;
+        last++;
+        size++;
         if(last==items.length){
             int[] res=resize(size,true);
             first=res[0];
             last=res[1];
         }
-        items[last]=item;
-        last++;
-        size++;
     }
     public boolean isEmpty(){
         return size==0;
