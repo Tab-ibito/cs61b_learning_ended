@@ -1,8 +1,6 @@
 package deque;
 
 public class LinkedListDeque<T> {
-    .first;;
-
     class node{
         private T val;
         private node next=null;
