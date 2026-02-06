@@ -25,23 +25,32 @@ public class TestBuggyAList {
     }
     @Test
     public void randomizedTest(){
-        AListNoResizing<Integer> L = new AListNoResizing<>();
-        BuggyAList<Integer> M = new BuggyAList<>();
-        int N = 1000;
+        AListNoResizing<Integer> correct = new AListNoResizing<>();
+        BuggyAList<Integer> broken = new BuggyAList<>();
+        int N = 5000;
         for (int i = 0; i < N; i += 1) {
-            int operationNumber = StdRandom.uniform(0, 2);
+            int operationNumber = StdRandom.uniform(0, 4);
             if (operationNumber == 0) {
                 // addLast
                 int randVal = StdRandom.uniform(0, 100);
-                L.addLast(randVal);
-                M.addLast(randVal);
+                correct.addLast(randVal);
+                broken.addLast(randVal);
                 System.out.println("addLast(" + randVal + ")");
             } else if (operationNumber == 1) {
                 // size
-                int size = L.size();
-                int size2 = M.size();
+                int size = correct.size();
+                int size2 = broken.size();
                 System.out.println("size: " + size);
                 System.out.println("size2: " + size2);
+            } else if (operationNumber == 2 && correct.size()!=0) {
+                System.out.println(correct.removeLast());
+                System.out.println(broken.removeLast());
+            } else if (operationNumber == 3 && correct.size()!=0){
+                int size = correct.size();
+                int randVal = StdRandom.uniform(0, size);
+                System.out.println(correct.get(randVal));
+                System.out.println(broken.get(randVal));
+                System.out.println("get(" + randVal + ")");
             }
         }
     }
