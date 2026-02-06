@@ -108,7 +108,7 @@ public class Model extends Observable {
      * */
     public int[] attach(int c,int r, boolean[][] occupied){
         int row=this.board.size()-1;
-        int new_r=row;
+        int new_r=r;
         for(int i=row;i>r;i--){
             if((tile(c,i)==null || tile(c,i).value()==tile(c,r).value()) && !occupied[c][i]){
                 new_r=i;
