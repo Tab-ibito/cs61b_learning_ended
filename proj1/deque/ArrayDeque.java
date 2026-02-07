@@ -1,10 +1,10 @@
 package deque;
 
-public class ArrayDeque<T> {
-    private T[] items;
+public class ArrayDeque<T> implements Deque<T> {
+    protected T[] items;
     private int size=0;
-    private int first;
-    private int last;
+    protected int first;
+    protected int last;
     public ArrayDeque(){
         items =(T[]) new Object[8];
         size=0;
@@ -27,6 +27,7 @@ public class ArrayDeque<T> {
             return new int[]{first, last};
         }
     }
+    @Override
     public void addFirst(T item){
         first--;
         items[first]=item;
@@ -37,6 +38,7 @@ public class ArrayDeque<T> {
             last=res[1];
         }
     }
+    @Override
     public void addLast(T item){
         items[last]=item;
         last++;
@@ -47,18 +49,18 @@ public class ArrayDeque<T> {
             last=res[1];
         }
     }
-    public boolean isEmpty(){
-        return size==0;
-    }
+    @Override
     public int size(){
         return size;
     }
+    @Override
     public void printDeque(){
         for(int i=first;i<last;i++){
             System.out.println(items[i]+" ");
         }
         System.out.println("\n");
     }
+    @Override
     public T removeFirst(){
         if(size==0){
             return null;
@@ -73,6 +75,7 @@ public class ArrayDeque<T> {
         }
         return removed;
     }
+    @Override
     public T removeLast(){
         if(size==0){
             return null;
@@ -87,6 +90,7 @@ public class ArrayDeque<T> {
         }
         return removed;
     }
+    @Override
     public T get(int index){
         if (index+first>=last){
             return null;
