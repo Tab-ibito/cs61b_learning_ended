@@ -1,7 +1,5 @@
 package deque;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -118,7 +116,6 @@ public class LinkedListDeque<T> implements Deque<T> {
         return p.val();
     }
 
-    @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private Node cursor = first;
