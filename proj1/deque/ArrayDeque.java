@@ -129,7 +129,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             return false;
         }
         Iterator<T> cursor1 = this.iterator();
-        Iterator<T> cursor2 = ((Deque<T>) o).iterator();
+        Deque<T> other = (Deque<T>) o;
+        Iterator<T> cursor2 = other.iterator();
         while (cursor1.hasNext() && cursor2.hasNext()) {
             T a = cursor1.next();
             T b = cursor2.next();
