@@ -35,7 +35,7 @@ public class GuitarString {
         //       Math.random() - 0.5 to generate new random numbers for each array index.
         Deque<Double> newBuffer = new ArrayDeque<>();
         for (int i = 0; i < buffer.size(); i++) {
-            double r = StdRandom.uniform(0,1) - 0.5;
+            double r = StdRandom.uniform(0, 1) - 0.5;
             newBuffer.addLast(r);
         }
         buffer = newBuffer;

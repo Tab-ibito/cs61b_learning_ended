@@ -19,7 +19,7 @@ public class ArrayDeque<T> implements Deque<T> {
     private int[] resize(int capacity, boolean direction) {
         T[] a = (T[]) new Object[capacity + items.length];
         if (!direction) {
-            if (last - first >= 0){
+            if (last - first >= 0) {
                 System.arraycopy(items, first, a, first + capacity, last - first);
             }
             items = a;
@@ -101,6 +101,7 @@ public class ArrayDeque<T> implements Deque<T> {
         }
         return removed;
     }
+
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
