@@ -124,7 +124,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
             @Override
             public boolean hasNext() {
-                return size != 0 || cursor != null;
+                return cursor != null;
             }
 
             @Override
@@ -165,9 +165,13 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
             // 防御性编程：处理 null 的情况（虽然作业里通常不存 null）
             if (myItem == null) {
-                if (otherItem != null) return false;
+                if (otherItem != null) {
+                    return false;
+                }
             } else {
-                if (!myItem.equals(otherItem)) return false;
+                if (!myItem.equals(otherItem)) {
+                    return false;
+                }
             }
         }
 
