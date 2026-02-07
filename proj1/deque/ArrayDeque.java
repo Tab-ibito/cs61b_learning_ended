@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class ArrayDeque<T> implements Deque<T> {
-    protected T[] items;
-    private int size = 0;
-    protected int first;
-    protected int last;
+    T[] items;
+    int size = 0;
+    int first;
+    int last;
 
     public ArrayDeque() {
         items = (T[]) new Object[8];
@@ -19,11 +19,15 @@ public class ArrayDeque<T> implements Deque<T> {
     private int[] resize(int capacity, boolean direction) {
         T[] a = (T[]) new Object[capacity + items.length];
         if (!direction) {
-            if (last - first >= 0) System.arraycopy(items, first, a, first + capacity, last - first);
+            if (last - first >= 0){
+                System.arraycopy(items, first, a, first + capacity, last - first);
+            }
             items = a;
             return new int[]{first + capacity, last + capacity};
         } else {
-            if (last - first >= 0) System.arraycopy(items, first, a, first, last - first);
+            if (last - first >= 0) {
+                System.arraycopy(items, first, a, first, last - first);
+            }
             items = a;
             return new int[]{first, last};
         }
@@ -97,6 +101,7 @@ public class ArrayDeque<T> implements Deque<T> {
         }
         return removed;
     }
+    @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private int cursor = first;

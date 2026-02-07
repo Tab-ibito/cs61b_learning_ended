@@ -9,7 +9,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         private Node next = null;
         private Node pre = null;
 
-        public Node(T item) {
+        Node(T item) {
             val = item;
         }
 
@@ -116,6 +116,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         return p.val();
     }
 
+    @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private Node cursor = first;
