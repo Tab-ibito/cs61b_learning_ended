@@ -1,12 +1,14 @@
 package deque;
 
+import jh61b.junit.In;
 import org.junit.Test;
 
 import java.util.Comparator;
+import java.util.Iterator;
 
 import static org.junit.Assert.*;
 
-public class ArrayDequeTest  {
+public class ArrayDequeTest {
 
     @Test
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
@@ -82,8 +84,8 @@ public class ArrayDequeTest  {
     public void multipleParamTest() {
 
 
-        ArrayDeque<String>  lld1 = new ArrayDeque<String>();
-        ArrayDeque<Double>  lld2 = new ArrayDeque<Double>();
+        ArrayDeque<String> lld1 = new ArrayDeque<String>();
+        ArrayDeque<Double> lld2 = new ArrayDeque<Double>();
         ArrayDeque<Boolean> lld3 = new ArrayDeque<Boolean>();
 
         lld1.addFirst("string");
@@ -130,21 +132,28 @@ public class ArrayDequeTest  {
             assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);
         }
     }
+
     @Test
     /* Add large number of elements to deque; check if order is correct. */
     public void test1() {
-        Comparator<Integer> c = new Comparator<Integer>(){
-            @Override
-            public int compare(Integer a,Integer b){
-                return a-b;
-            };
-        };
-        MaxArrayDeque<Integer> lld1 = new MaxArrayDeque<Integer>(c);
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
         for (int i = 0; i < 100; i++) {
             lld1.addLast(i);
         }
-        for (int i = 0; i < 100; i++) {
-            System.out.println(lld1.max());
+        Iterator<Integer> it = lld1.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
         }
+    }
+
+    @Test
+    public void test2() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        ArrayDeque<Integer> lld2 = new ArrayDeque<Integer>();
+        for (int i = 0; i < 100; i++) {
+            lld1.addLast(i);
+            lld2.addLast(i);
+        }
+        System.out.println(lld1.equals(lld2));
     }
 }
