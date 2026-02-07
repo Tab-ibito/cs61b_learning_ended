@@ -125,22 +125,36 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        // 依然检查是不是 Deque 接口
         if (!(o instanceof Deque)) {
             return false;
         }
-        Iterator<T> cursor1 = this.iterator();
+
+        // 强制转换
         Deque<T> other = (Deque<T>) o;
-        Iterator<T> cursor2 = other.iterator();
-        while (cursor1.hasNext() && cursor2.hasNext()) {
-            T a = cursor1.next();
-            T b = cursor2.next();
-            if (!a.equals(b)) {
-                return false;
-            }
-        }
-        if (cursor1.hasNext() || cursor2.hasNext()) {
+
+        // 1. 检查大小
+        if (this.size() != other.size()) {
             return false;
         }
+
+        // 2. 用笨办法：for 循环 + get(i)
+        // 这种写法不需要 other 拥有 iterator() 方法
+        for (int i = 0; i < this.size(); i++) {
+            T myItem = this.get(i);
+            T otherItem = other.get(i);
+
+            // 防御性编程：处理 null 的情况（虽然作业里通常不存 null）
+            if (myItem == null) {
+                if (otherItem != null) return false;
+            } else {
+                if (!myItem.equals(otherItem)) return false;
+            }
+        }
+
         return true;
     }
 
