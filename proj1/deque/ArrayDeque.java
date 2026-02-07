@@ -102,7 +102,6 @@ public class ArrayDeque<T> implements Deque<T> {
         return removed;
     }
 
-    @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private int cursor = first;
