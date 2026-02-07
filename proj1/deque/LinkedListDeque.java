@@ -3,13 +3,13 @@ package deque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class LinkedListDeque<T> implements Deque<T> {
+public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     class Node {
         private T val;
         private Node next = null;
         private Node pre = null;
 
-        Node(T item) {
+        private Node(T item) {
             val = item;
         }
 
@@ -31,15 +31,16 @@ public class LinkedListDeque<T> implements Deque<T> {
     private Node last;
 
     public LinkedListDeque() {
-        first = new Node(null);
-        last = first;
+        first = null;
+        last = null;
         size = 0;
     }
 
     @Override
     public void addFirst(T item) {
         if (isEmpty()) {
-            first.val = item;
+            first = new Node(item);
+            last = first;
         } else {
             Node added = new Node(item);
             added.next = first;
@@ -52,7 +53,8 @@ public class LinkedListDeque<T> implements Deque<T> {
     @Override
     public void addLast(T item) {
         if (isEmpty()) {
-            last.val = item;
+            first = new Node(item);
+            last = first;
         } else {
             Node added = new Node(item);
             added.pre = last;
@@ -122,7 +124,7 @@ public class LinkedListDeque<T> implements Deque<T> {
 
             @Override
             public boolean hasNext() {
-                return cursor != null;
+                return size != 0 || cursor != null;
             }
 
             @Override
@@ -139,11 +141,11 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof LinkedListDeque)) {
+        if (!(o instanceof Deque)) {
             return false;
         }
         Iterator<T> cursor1 = this.iterator();
-        Iterator<T> cursor2 = ((LinkedListDeque<T>) o).iterator();
+        Iterator<T> cursor2 = ((Deque<T>) o).iterator();
         while (cursor1.hasNext() && cursor2.hasNext()) {
             T a = cursor1.next();
             T b = cursor2.next();

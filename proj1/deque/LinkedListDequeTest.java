@@ -1,9 +1,10 @@
 package deque;
 
+import jh61b.junit.In;
 import org.junit.Test;
 
 import java.util.Iterator;
-
+import edu.princeton.cs.algs4.StdRandom;
 import static org.junit.Assert.*;
 
 
@@ -138,12 +139,27 @@ public class LinkedListDequeTest {
 
     public void test2(){
         LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
-        LinkedListDeque<Integer> lld2 = new LinkedListDeque<Integer>();
+        ArrayDeque<Integer> lld2 = new ArrayDeque<Integer>();
         for (int i = 0; i < 100; i++) {
             lld1.addLast(i);
             lld2.addLast(i);
         }
-        lld2.removeLast();
         System.out.println(lld1.equals(lld2));
+    }
+    @Test
+    public void test3(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        for(int i=1;i<=5000;i++){
+           int op = StdRandom.uniform(0,3);
+           if(op==0){
+                lld1.addFirst(i);
+           }else if(op==1){
+                System.out.println(lld1.removeLast());
+           }else if(op==2){
+                lld1.printDeque();
+                System.out.println("size"+lld1.size());
+                System.out.println(lld1.isEmpty());
+           }
+        }
     }
 }
