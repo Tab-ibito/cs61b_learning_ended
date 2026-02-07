@@ -14,7 +14,7 @@ public class ArrayDeque<T> {
     private int[] resize(int capacity, boolean direction){
         T[] a=(T[]) new Object[capacity+items.length];
         if (!direction){
-            for(int i = 0;i<size;i++){
+            for(int i = first;i<last;i++){
                 a[i+capacity]=items[i];
             }
             items=a;
@@ -88,9 +88,9 @@ public class ArrayDeque<T> {
         return removed;
     }
     public T get(int index){
-        if (index<first || index>=last){
+        if (index+first>=last){
             return null;
         }
-        return items[index-first];
+        return items[index+first];
     }
 }
