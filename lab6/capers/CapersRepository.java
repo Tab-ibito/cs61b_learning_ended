@@ -17,9 +17,8 @@ import static capers.Utils.*;
 public class CapersRepository {
     /** Current Working Directory. */
     static final File CWD = new File(System.getProperty("user.dir"));
-
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = Utils.join(CWD, "capers",".capers"); // TODO Hint: look at the `join`
+    static final File CAPERS_FOLDER = Utils.join(CWD, ".capers"); // TODO Hint: look at the `join`
                                             //      function in Utils
     static final File STORY=Utils.join(CAPERS_FOLDER, "story");
 
@@ -34,12 +33,12 @@ public class CapersRepository {
      */
     public static void setupPersistence() {
         // TODO
-        CAPERS_FOLDER.mkdir();
-        Dog.DOG_FOLDER.mkdir();
+        CAPERS_FOLDER.mkdirs();
+        Dog.DOG_FOLDER.mkdirs();
         try {
             if(!STORY.exists()){
                 STORY.createNewFile();
-                writeObject(STORY,"");
+                Utils.writeObject(STORY,"");
             }
         } catch (IOException excp) {
             excp.printStackTrace();
@@ -54,9 +53,14 @@ public class CapersRepository {
     public static void writeStory(String text) {
         // TODO
         String inp=readObject(STORY, String.class);
-        System.out.println(inp);
-        System.out.println(text);
-        writeObject(STORY,inp+"\n"+text);
+        if (!inp.isEmpty()){
+            System.out.println(inp);
+            System.out.println(text);
+            Utils.writeObject(STORY,inp+"\n"+text);
+        }else{
+            System.out.println(text);
+            Utils.writeObject(STORY,text);
+        }
     }
 
     /**

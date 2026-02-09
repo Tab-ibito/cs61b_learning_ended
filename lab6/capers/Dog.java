@@ -16,7 +16,7 @@ public class Dog { // TODO
     /**
      * Folder that dogs live in.
      */
-    static final File DOG_FOLDER = Utils.join(CapersRepository.CWD, "capers", ".capers", "dogs"); // TODO (hint: look at the `join`
+    static final File DOG_FOLDER = Utils.join(CapersRepository.CWD, ".capers", "dogs"); // TODO (hint: look at the `join`
     //      function in Utils)
 
     /**
@@ -75,7 +75,7 @@ public class Dog { // TODO
         File dogFile = Utils.join(Dog.DOG_FOLDER, name);
         try {
             dogFile.createNewFile();
-            writeObject(dogFile, name + "\n" + breed + "\n" + age);
+            Utils.writeObject(dogFile, name + "\n" + breed + "\n" + age);
         } catch (IOException excp) {
             excp.printStackTrace();
         }
