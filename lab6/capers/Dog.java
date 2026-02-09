@@ -1,30 +1,43 @@
 package capers;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+
 import static capers.Utils.*;
 
-/** Represents a dog that can be serialized.
+/**
+ * Represents a dog that can be serialized.
+ *
  * @author TODO
-*/
+ */
 public class Dog { // TODO
 
-    /** Folder that dogs live in. */
-    static final File DOG_FOLDER = null; // TODO (hint: look at the `join`
-                                         //      function in Utils)
+    /**
+     * Folder that dogs live in.
+     */
+    static final File DOG_FOLDER = Utils.join(CapersRepository.CWD, "capers", ".capers", "dogs"); // TODO (hint: look at the `join`
+    //      function in Utils)
 
-    /** Age of dog. */
+    /**
+     * Age of dog.
+     */
     private int age;
-    /** Breed of dog. */
+    /**
+     * Breed of dog.
+     */
     private String breed;
-    /** Name of dog. */
+    /**
+     * Name of dog.
+     */
     private String name;
 
     /**
      * Creates a dog object with the specified parameters.
-     * @param name Name of dog
+     *
+     * @param name  Name of dog
      * @param breed Breed of dog
-     * @param age Age of dog
+     * @param age   Age of dog
      */
     public Dog(String name, String breed, int age) {
         this.age = age;
@@ -40,7 +53,9 @@ public class Dog { // TODO
      */
     public static Dog fromFile(String name) {
         // TODO (hint: look at the Utils file)
-        return null;
+        File dogFile = Utils.join(Dog.DOG_FOLDER, name);
+        String[] inp = readObject(dogFile, String.class).split("\n");
+        return new Dog(inp[0], inp[1], Integer.valueOf(inp[2]));
     }
 
     /**
@@ -57,13 +72,20 @@ public class Dog { // TODO
      */
     public void saveDog() {
         // TODO (hint: don't forget dog names are unique)
+        File dogFile = Utils.join(Dog.DOG_FOLDER, name);
+        try {
+            dogFile.createNewFile();
+            writeObject(dogFile, name + "\n" + breed + "\n" + age);
+        } catch (IOException excp) {
+            excp.printStackTrace();
+        }
     }
 
     @Override
     public String toString() {
         return String.format(
-            "Woof! My name is %s and I am a %s! I am %d years old! Woof!",
-            name, breed, age);
+                "Woof! My name is %s and I am a %s! I am %d years old! Woof!",
+                name, breed, age);
     }
 
 }
