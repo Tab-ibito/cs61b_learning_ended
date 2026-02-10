@@ -192,7 +192,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         for (int i = 0; i < size; i++) {
             Iterator<Node> iter = buckets[i].iterator();
             while (iter.hasNext()) {
-                Node cur=iter.next();
+                Node cur = iter.next();
                 if (cur.key.equals(key)) {
                     iter.remove();
                     return cur.value;
@@ -207,7 +207,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         for (int i = 0; i < size; i++) {
             Iterator<Node> iter = buckets[i].iterator();
             while (iter.hasNext()) {
-                Node cur=iter.next();
+                Node cur = iter.next();
                 if (cur.key.equals(key) && cur.value.equals(value)) {
                     iter.remove();
                     return cur.value;
