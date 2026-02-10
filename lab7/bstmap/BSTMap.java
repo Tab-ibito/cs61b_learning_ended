@@ -4,8 +4,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 
-public class BSTMap<K extends Comparable, V> implements Map61B<K, V> {
-    int size = 0;
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
+    private int size = 0;
 
     private class Node {
         Node(K k, V v, Node l, Node r) {
@@ -92,6 +92,10 @@ public class BSTMap<K extends Comparable, V> implements Map61B<K, V> {
             }
         }
         return null;
+    }
+
+    public void printInOrder(){
+        System.out.println("Fku cs61b");
     }
 
     @Override
