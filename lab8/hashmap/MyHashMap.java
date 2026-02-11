@@ -29,7 +29,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     /* Instance Variables */
     private Collection<Node>[] buckets;
     // You should probably define some more!
-    private final int initialSize = 16;
+    private int initialSize = 16;
     private double loadFactor = 0.75;
     private int size = 0;
     private int items = 0;
@@ -43,6 +43,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
 
     public MyHashMap(int initialSize) {
+        this.initialSize=initialSize;
         this.size = initialSize;
         buckets = createTable(initialSize);
     }
@@ -55,6 +56,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param maxLoad     maximum load factor
      */
     public MyHashMap(int initialSize, double maxLoad) {
+        this.initialSize=initialSize;
         this.size = initialSize;
         buckets = createTable(initialSize);
         loadFactor = maxLoad;
@@ -115,7 +117,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             Iterator<Node> iter = buckets[i].iterator();
             while (iter.hasNext()) {
                 Node cur = iter.next();
-                int index = cur.key.hashCode() & (size - 1);
+                int index = cur.key.hashCode() & (newSize - 1);
                 a[index].add(cur);
             }
         }
@@ -142,13 +144,12 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     @Override
     public V get(K key) {
-        for (int i = 0; i < size; i++) {
-            Iterator<Node> iter = buckets[i].iterator();
-            while (iter.hasNext()) {
-                Node cur = iter.next();
-                if (cur.key.equals(key)) {
-                    return cur.value;
-                }
+        int index = key.hashCode() & (size - 1);
+        Iterator<Node> iter = buckets[index].iterator();
+        while (iter.hasNext()) {
+            Node cur = iter.next();
+            if (cur.key.equals(key)) {
+                return cur.value;
             }
         }
         return null;
