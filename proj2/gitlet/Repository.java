@@ -444,6 +444,13 @@ public class Repository {
             Commit next = getCommitById(getFullUid(pointer));
             pointer = next.getFatherId();
         }
+        Set<String> tracking = getTrackingFileNames();
+        for (String i : target.getInfo().keySet()) {
+            if (!tracking.contains(i) && join(CWD, i).exists()) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
+        }
         for (String i : target.getInfo().keySet()){
             checkout(commitId, i);
         }
@@ -453,6 +460,10 @@ public class Repository {
 
     public static void merge(String givenBranch) {
         String currentBranch = readObject(HEAD, String.class);
+        if(currentBranch.equals(givenBranch)){
+            System.out.println("Cannot merge a branch with itself.");
+            System.exit(0);
+        }
         File givenFile = join(HEADS, givenBranch);
         LinkedList<String> currentHistory = readObject(getCurrentBranchFile(), LinkedList.class);
         LinkedList<String> givenHistory = readObject(givenFile, LinkedList.class);
@@ -480,7 +491,7 @@ public class Repository {
                 checkout(givenHistory.getFirst(), i);
                 addFile(i);
             }
-            if (isConflict(i, currentCommitInfo, givenCommitInfo) && isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
+            if (isModified(i, splitCommitInfo, currentCommitInfo) && !givenCommitInfo.containsKey(i) || isModified(i, splitCommitInfo, givenCommitInfo) && !currentCommitInfo.containsKey(i) || !splitCommitInfo.containsKey(i) && isConflict(i, currentCommitInfo, givenCommitInfo) || isConflict(i, currentCommitInfo, givenCommitInfo) && isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
                 File conflictFile = join(CWD, i);
                 String givenIndex = givenCommitInfo.get(i);
                 String currentIndex = currentCommitInfo.get(i);
@@ -508,7 +519,7 @@ public class Repository {
     }
 
     private static boolean isModified(String i, HashMap<String, String> origin, HashMap<String, String> info) {
-        return info.containsKey(i) && !origin.get(i).equals(info.get(i));
+        return origin.containsKey(i) && info.containsKey(i) && !origin.get(i).equals(info.get(i));
     }
 
     public static boolean isConflict(String i, HashMap<String, String> current, HashMap<String, String> given) {
