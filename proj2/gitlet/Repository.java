@@ -470,6 +470,7 @@ public class Repository {
         HashMap<String, String> currentCommitInfo = getCurrentCommit().getInfo();
         HashMap<String, String> givenCommitInfo = getCommitById(givenHistory.getFirst()).getInfo();
         HashMap<String, String> splitCommitInfo = null;
+        HashMap<String, String> pool= new HashMap<>();
         boolean status = false;
         for (String i : currentHistory) {
             if (givenHistory.contains(i)) {
@@ -477,28 +478,41 @@ public class Repository {
                 break;
             }
         }
-        for (String i : splitCommitInfo.keySet()) {
-            if (!isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
+        pool.putAll(currentCommitInfo);
+        pool.putAll(givenCommitInfo);
+        pool.putAll(splitCommitInfo);
+        for (String i : pool.keySet()) {
+            boolean inSplit = in(i,splitCommitInfo);
+            boolean inCurrent = in(i, currentCommitInfo);
+            boolean inGiven = in(i, givenCommitInfo);
+            boolean modifiedGiven = isModified(i, splitCommitInfo, givenCommitInfo);
+            boolean modifiedCurrent = isModified(i, splitCommitInfo, currentCommitInfo);
+            boolean conflict = isConflict(i,givenCommitInfo,currentCommitInfo);
+            if (inSplit && !modifiedCurrent && modifiedGiven){
                 checkout(givenHistory.getFirst(), i);
                 addFile(i);
             }
-            if (!givenCommitInfo.containsKey(i) && !isModified(i, splitCommitInfo, currentCommitInfo)) {
+            if (inSplit && !inGiven && !modifiedCurrent){
                 removeFile(i);
             }
-        }
-        for (String i : givenCommitInfo.keySet()) {
-            if (!splitCommitInfo.containsKey(i) && !currentCommitInfo.containsKey(i)) {
+            if (inGiven && !inSplit && !inCurrent){
                 checkout(givenHistory.getFirst(), i);
                 addFile(i);
             }
-            if (isModified(i, splitCommitInfo, currentCommitInfo) && !givenCommitInfo.containsKey(i) || isModified(i, splitCommitInfo, givenCommitInfo) && !currentCommitInfo.containsKey(i) || !splitCommitInfo.containsKey(i) && isConflict(i, currentCommitInfo, givenCommitInfo) || isConflict(i, currentCommitInfo, givenCommitInfo) && isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
+            if (!inSplit && conflict || modifiedGiven && modifiedCurrent && conflict || modifiedGiven && !inCurrent || modifiedCurrent && !inGiven){
                 File conflictFile = join(CWD, i);
                 String givenIndex = givenCommitInfo.get(i);
                 String currentIndex = currentCommitInfo.get(i);
-                File givenContent = join(OBJECTS, givenIndex);
-                File currentContent = join(OBJECTS, currentIndex);
-                byte[] givenFileContent = readContents(givenContent);
-                byte[] currentFileContent = readContents(currentContent);
+                byte[] givenFileContent = new byte[0];
+                byte[] currentFileContent = new byte[0];
+                if(givenIndex != null){
+                    File givenContent = join(OBJECTS, givenIndex);
+                    givenFileContent = readContents(givenContent);
+                }
+                if(currentIndex != null){
+                    File currentContent = join(OBJECTS, currentIndex);
+                    currentFileContent = readContents(currentContent);
+                }
                 try {
                     if (!conflictFile.exists()) {
                         conflictFile.createNewFile();
@@ -525,11 +539,15 @@ public class Repository {
         }
     }
 
+    private static boolean in(String i, HashMap<String, String> range){
+        return range.containsKey(i);
+    }
+
     private static boolean isModified(String i, HashMap<String, String> origin, HashMap<String, String> info) {
         return origin.containsKey(i) && info.containsKey(i) && !origin.get(i).equals(info.get(i));
     }
 
-    public static boolean isConflict(String i, HashMap<String, String> current, HashMap<String, String> given) {
+    private static boolean isConflict(String i, HashMap<String, String> current, HashMap<String, String> given) {
         return given.containsKey(i) && current.containsKey(i) && !given.get(i).equals(current.get(i));
     }
 
