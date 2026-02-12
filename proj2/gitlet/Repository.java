@@ -194,34 +194,39 @@ public class Repository {
         return commitId;
     }
 
-    private static Commit getCommit(String exceptedId, File branch) {
+    private static Commit getCommit(String expectedId, File branch) {
         LinkedList<String> history = readObject(branch, LinkedList.class);
-        Commit commit = null;
-        if (exceptedId.length() == UID_LENGTH && history.contains(exceptedId)) {
-            commit = getCommitById(exceptedId);
-            return commit;
-        }
-        if (exceptedId.length() < UID_LENGTH) {
-            int count = 0;
-            for (String historyId : history) {
-                if (historyId.indexOf(exceptedId) == 0) {
-                    count++;
-                    commit = getCommitById(historyId);
-                }
-            }
-            if (count > 1) {
-                throw error("ambiguous argument " + exceptedId + ": unknown revision or path not in the working tree.");
-            }
-        }
-        if (commit == null) {
+        String full = getFullUid(expectedId);
+        if(history.contains(full)){
+            return getCommitById(full);
+        }else{
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
-        return commit;
+        return null;
     }
 
-    private static Commit getCommit(String exceptedId) {
-        return getCommit(exceptedId, getCurrentBranchFile());
+    private static String getFullUid (String shortened){
+        String full = null;
+        int count = 0;
+        for (String objectId : plainFilenamesIn(OBJECTS)) {
+            if (objectId.indexOf(shortened) == 0) {
+                full = objectId;
+                count++;
+            }
+        }
+        if (count > 1) {
+            throw error("ambiguous argument " + shortened + ": unknown revision or path not in the working tree.");
+        }
+        if (full == null) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+        return full;
+    }
+    
+    private static Commit getCommit(String expectedId) {
+        return getCommit(expectedId, getCurrentBranchFile());
     }
 
     private static Set<String> getTrackingFileNames() {
@@ -339,20 +344,11 @@ public class Repository {
 
     public static void checkout(String fileName) {
         String commitId = getCurrentCommitId();
-        checkout(commitId, fileName, getCurrentBranchFile());
-    }
-
-    public static void checkout(String fileName, File branch) {
-        String commitId = getCurrentCommitId();
-        checkout(commitId, fileName, branch);
+        checkout(commitId, fileName);
     }
 
     public static void checkout(String commitId, String fileName) {
-        checkout(commitId, fileName, getCurrentBranchFile());
-    }
-
-    public static void checkout(String commitId, String fileName, File branch) {
-        Commit commit = getCommit(commitId, branch);
+        Commit commit = getCommitById(getFullUid(commitId));
         if (!commit.getInfo().containsKey(fileName)) {
             System.out.println("File does not exist in that commit.");
             System.exit(0);
@@ -398,7 +394,7 @@ public class Repository {
             hiddenFile.delete();
         }
         for (String fileName : targetCommit.getInfo().keySet()) {
-            checkout(targetId, fileName, targetBranch);
+            checkout(targetId, fileName);
         }
         writeObject(HEAD, target);
         writeObject(INDEX, new HashMap<String, Stage>());
@@ -435,18 +431,21 @@ public class Repository {
 
     public static void reset(String commitId) {
         File branch = getCurrentBranchFile();
-        Commit commit = getCommit(commitId);
         Commit currentCommit = getCurrentCommit();
-        commit.getInfo();
         for (String i : currentCommit.getInfo().keySet()) {
             removeFile(i);
         }
-        LinkedList<String> history = readObject(branch, LinkedList.class);
-        while (!history.getFirst().equals(commit.getId())) {
-            history.removeFirst();
+        Commit target = getCommitById(getFullUid(commitId));
+        LinkedList<String> history = new LinkedList<>();
+        String pointer = target.getFatherId();
+        history.addFirst(target.getId());
+        while (pointer!=null) {
+            history.addFirst(pointer);
+            Commit next = getCommitById(getFullUid(pointer));
+            pointer = next.getFatherId();
         }
-        for (String i : getCommitById(history.getFirst()).getInfo().keySet()){
-            checkout(commitId, i, branch);
+        for (String i : target.getInfo().keySet()){
+            checkout(commitId, i);
         }
         writeObject(branch, history);
         writeObject(INDEX, new HashMap<String, Stage>());
@@ -469,7 +468,7 @@ public class Repository {
         }
         for (String i : splitCommitInfo.keySet()) {
             if (!isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
-                checkout(givenHistory.getFirst(), i, givenFile);
+                checkout(givenHistory.getFirst(), i);
                 addFile(i);
             }
             if (!givenCommitInfo.containsKey(i) && !isModified(i, splitCommitInfo, currentCommitInfo)) {
@@ -478,7 +477,7 @@ public class Repository {
         }
         for (String i : givenCommitInfo.keySet()) {
             if (!splitCommitInfo.containsKey(i) && !currentCommitInfo.containsKey(i)) {
-                checkout(givenHistory.getFirst(), i, givenFile);
+                checkout(givenHistory.getFirst(), i);
                 addFile(i);
             }
             if (isConflict(i, currentCommitInfo, givenCommitInfo) && isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {

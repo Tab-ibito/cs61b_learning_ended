@@ -30,7 +30,7 @@ public class Commit implements Serializable {
     private String message;
     private String date;
     private HashMap<String, String> info = new HashMap<>();
-    private String fatherId;
+    private String fatherId = null;
     private String id;
     private boolean changed = false;
 
@@ -104,5 +104,9 @@ public class Commit implements Serializable {
 
     public HashMap<String, String> getInfo() {
         return info;
+    }
+
+    public String getFatherId(){
+        return fatherId;
     }
 }
