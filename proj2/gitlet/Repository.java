@@ -61,11 +61,11 @@ public class Repository {
                 HEAD.createNewFile();
                 INDEX.createNewFile();
                 MASTER.createNewFile();
+                writeObject(HEAD, "master");
+                writeObject(INDEX, new HashMap<String, Stage>());
                 Commit initialCommit = new Commit("initial commit");
                 LinkedList<String> history = new LinkedList<>();
                 history.addFirst(initialCommit.getId());
-                writeObject(HEAD, "master");
-                writeObject(INDEX, new HashMap<String, Stage>());
                 writeObject(MASTER, history);
             } else {
                 System.out.println("A Gitlet version-control system already exists in the current directory.");
@@ -125,13 +125,7 @@ public class Repository {
         LinkedList<String> history = readObject(branch, LinkedList.class);
         history.addFirst(commit.getId());
         writeObject(branch, history);
-        INDEX.delete();
-        try {
-            INDEX.createNewFile();
-            writeObject(INDEX, new HashMap<String, Stage>());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        writeObject(INDEX, new HashMap<String, Stage>());
     }
 
     public static void printLog() {
@@ -400,10 +394,11 @@ public class Repository {
             }
         }
         for (String fileName : tracking){
-            removeFile(fileName);
+            File hiddenFile = join(CWD, fileName);
+            hiddenFile.delete();
         }
         for (String fileName : targetCommit.getInfo().keySet()) {
-            checkout(targetId ,fileName, targetBranch);
+            checkout(targetId, fileName, targetBranch);
         }
         writeObject(HEAD, target);
         writeObject(INDEX, new HashMap<String, Stage>());

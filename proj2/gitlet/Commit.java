@@ -58,8 +58,8 @@ public class Commit implements Serializable {
             try {
                 LinkedList<String> history = readObject(Repository.getCurrentBranchFile(), LinkedList.class);
                 fatherId = history.getFirst();
-                File commitFile = join(OBJECTS, fatherId);
-                Commit commit = readObject(commitFile, Commit.class);
+                File fatherFile = join(OBJECTS, fatherId);
+                Commit commit = readObject(fatherFile, Commit.class);
                 Iterator<String> iter = commit.getInfo().keySet().iterator();
                 while (iter.hasNext()) {
                     String i = iter.next();
@@ -69,6 +69,8 @@ public class Commit implements Serializable {
                 }
                 material.add(fatherId);
                 material.addAll(info.values());
+                material.add(message);
+                material.add(date);
             } catch (Exception e) {
                 material.add(message);
                 material.add(date);
