@@ -444,13 +444,14 @@ public class Repository {
         Commit currentCommit = getCurrentCommit();
         commit.getInfo();
         for (String i : currentCommit.getInfo().keySet()) {
-            if (!commit.getInfo().containsKey(i)) {
-                removeFile(i);
-            }
+            removeFile(i);
         }
         LinkedList<String> history = readObject(branch, LinkedList.class);
         while (!history.getFirst().equals(commit.getId())) {
             history.removeFirst();
+        }
+        for (String i : getCommitById(history.getFirst()).getInfo().keySet()){
+            checkout(commitId, i, branch);
         }
         writeObject(branch, history);
         writeObject(INDEX, new HashMap<String, Stage>());
