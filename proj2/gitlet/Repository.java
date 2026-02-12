@@ -464,7 +464,6 @@ public class Repository {
         HashMap<String, String> currentCommitInfo = getCurrentCommit().getInfo();
         HashMap<String, String> givenCommitInfo = getCommitById(givenHistory.getFirst()).getInfo();
         HashMap<String, String> splitCommitInfo = null;
-        HashMap<String, String> pool = new HashMap<>();
         boolean status = false;
         for (String i : currentHistory) {
             if (givenHistory.contains(i)) {
@@ -472,12 +471,9 @@ public class Repository {
                 break;
             }
         }
-        pool.putAll(currentCommitInfo);
-        pool.putAll(givenCommitInfo);
-        pool.putAll(splitCommitInfo);
-        for (String i : pool.keySet()) {
+        for (String i : splitCommitInfo.keySet()) {
             if (!isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
-                checkout(i, givenBranch);
+                checkout(givenHistory.getFirst(), i, givenFile);
                 addFile(i);
             }
             if (!givenCommitInfo.containsKey(i) && !isModified(i, splitCommitInfo, currentCommitInfo)) {
@@ -486,10 +482,10 @@ public class Repository {
         }
         for (String i : givenCommitInfo.keySet()) {
             if (!splitCommitInfo.containsKey(i) && !currentCommitInfo.containsKey(i)) {
-                checkout(i, givenBranch);
+                checkout(givenHistory.getFirst(), i, givenFile);
                 addFile(i);
             }
-            if (isConflict(i, currentCommitInfo, givenCommitInfo)) {
+            if (isConflict(i, currentCommitInfo, givenCommitInfo) && isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
                 File conflictFile = join(CWD, i);
                 String givenIndex = givenCommitInfo.get(i);
                 String currentIndex = currentCommitInfo.get(i);
@@ -505,8 +501,8 @@ public class Repository {
                     e.printStackTrace();
                 }
                 status = true;
-                addFile(i);
                 writeContents(conflictFile, "<<<<<<< HEAD\n", currentFileContent, "\n=======\n", givenFileContent, "\n>>>>>>>");
+                addFile(i);
             }
             System.out.println("Merged " + givenBranch + " into " + currentBranch + ".");
             if (status) {
@@ -516,7 +512,7 @@ public class Repository {
     }
 
     private static boolean isModified(String i, HashMap<String, String> origin, HashMap<String, String> info) {
-        return info.containsKey(i) && origin.get(i).equals(info.get(i));
+        return info.containsKey(i) && !origin.get(i).equals(info.get(i));
     }
 
     public static boolean isConflict(String i, HashMap<String, String> current, HashMap<String, String> given) {
