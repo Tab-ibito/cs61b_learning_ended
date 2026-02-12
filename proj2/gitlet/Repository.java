@@ -438,9 +438,9 @@ public class Repository {
         Commit target = getCommitById(getFullUid(commitId));
         LinkedList<String> history = new LinkedList<>();
         String pointer = target.getFatherId();
-        history.addFirst(target.getId());
+        history.addLast(target.getId());
         while (pointer!=null) {
-            history.addFirst(pointer);
+            history.addLast(pointer);
             Commit next = getCommitById(getFullUid(pointer));
             pointer = next.getFatherId();
         }
