@@ -503,7 +503,6 @@ public class Repository {
         }
         String msg = "Merged " + givenBranch + " into " + currentBranch + ".";
         commitFile(msg);
-        System.out.println(msg);
         if (status) {
             System.out.println("Encountered a merge conflict.");
         }
