@@ -81,8 +81,16 @@ public class Repository {
     }
 
     public static void addFile(String name, boolean removed) {
+        if(removed){
+            HashMap<String, Stage> sites;
+            sites = readObject(INDEX, HashMap.class);
+            String hash = getCurrentCommit().getInfo().get(name);
+            sites.put(name, new Stage(hash, removed));
+            writeObject(INDEX, sites);
+            return;
+        }
         File stagingFile = new File(CWD, name);
-        if (!removed && !stagingFile.exists()) {
+        if (!stagingFile.exists()) {
             System.out.println("File does not exist.");
             System.exit(0);
         }
@@ -93,8 +101,8 @@ public class Repository {
         sites = readObject(INDEX, HashMap.class);
         sites.remove(name);
         writeObject(INDEX, sites);
-        if(!removed && commit.getInfo().containsKey(name) && hash.equals(commit.getInfo().get(name))){
-            System.exit(0);
+        if(commit.getInfo().containsKey(name) && hash.equals(commit.getInfo().get(name))){
+            return;
         }
         sites.put(name, new Stage(hash, removed));
         writeObject(INDEX, sites);
@@ -372,11 +380,6 @@ public class Repository {
     public static void switchBranch(String target) {
         String branchName = readObject(HEAD, String.class);
         File targetBranch = join(HEADS, target);
-        LinkedList<String> history = readObject(targetBranch, LinkedList.class);
-        String targetId = history.getFirst();
-        File targetFile = join(OBJECTS, targetId);
-        Commit targetCommit = readObject(targetFile, Commit.class);
-        Set<String> tracking = getTrackingFileNames();
         if (branchName.equals(target)) {
             System.out.println("No need to checkout the current branch.");
             System.exit(0);
@@ -385,6 +388,11 @@ public class Repository {
             System.out.println("No such branch exists.");
             System.exit(0);
         }
+        LinkedList<String> history = readObject(targetBranch, LinkedList.class);
+        String targetId = history.getFirst();
+        File targetFile = join(OBJECTS, targetId);
+        Commit targetCommit = readObject(targetFile, Commit.class);
+        Set<String> tracking = getTrackingFileNames();
         for (String i : targetCommit.getInfo().keySet()) {
             if (!tracking.contains(i)) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
@@ -402,7 +410,8 @@ public class Repository {
         File targetBranch = join(HEADS, branchName);
         File branch = getCurrentBranchFile();
         if (targetBranch.exists()) {
-            throw error("A branch with that name already exists.");
+            System.out.println("A branch with that name already exists.");
+            System.exit(0);
         }
         try {
             targetBranch.createNewFile();
@@ -416,10 +425,12 @@ public class Repository {
     public static void removeBranch(String target) {
         File targetBranch = join(HEADS, target);
         if (!targetBranch.exists()) {
-            throw error("A branch with that name does not exist.");
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
         }
         if (target.equals(readObject(HEAD, String.class))) {
-            throw error("Cannot remove the current branch.");
+            System.out.println("Cannot remove the current branch.");
+            System.exit(0);
         }
         targetBranch.delete();
     }
