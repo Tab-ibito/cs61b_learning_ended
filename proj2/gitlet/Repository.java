@@ -485,6 +485,13 @@ public class Repository {
         pool.putAll(currentCommitInfo);
         pool.putAll(givenCommitInfo);
         pool.putAll(splitCommitInfo);
+        Set<String> tracking = getTrackingFileNames();
+        for (String i : givenCommitInfo.keySet()) {
+            if (!tracking.contains(i) && join(CWD, i).exists()) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
+        }
         for (String i : pool.keySet()) {
             boolean inSplit = in(i,splitCommitInfo);
             boolean inCurrent = in(i, currentCommitInfo);
