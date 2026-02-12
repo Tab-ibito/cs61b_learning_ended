@@ -497,7 +497,7 @@ public class Repository {
                     e.printStackTrace();
                 }
                 status = true;
-                writeContents(conflictFile, "<<<<<<< HEAD\n", currentFileContent, "\n=======\n", givenFileContent, "\n>>>>>>>");
+                writeContents(conflictFile, "<<<<<<< HEAD\n", currentFileContent, "=======\n", givenFileContent, ">>>>>>>\n");
                 addFile(i);
             }
         }
