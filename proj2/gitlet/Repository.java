@@ -506,7 +506,9 @@ public class Repository {
                 addFile(i);
             }
         }
-        System.out.println("Merged " + givenBranch + " into " + currentBranch + ".");
+        String msg = "Merged " + givenBranch + " into " + currentBranch + ".";
+        commitFile(msg);
+        System.out.println(msg);
         if (status) {
             System.out.println("Encountered a merge conflict.");
         }
