@@ -82,18 +82,20 @@ public class Repository {
 
     public static void addFile(String name, boolean removed) {
         File stagingFile = new File(CWD, name);
-        if (!stagingFile.exists()) {
+        if (!removed && !stagingFile.exists()) {
             System.out.println("File does not exist.");
             System.exit(0);
         }
         byte[] inp = readContents(stagingFile);
         Commit commit = getCurrentCommit();
         String hash = sha1(inp);
+        HashMap<String, Stage> sites;
+        sites = readObject(INDEX, HashMap.class);
+        sites.remove(name);
+        writeObject(INDEX, sites);
         if(!removed && commit.getInfo().containsKey(name) && hash.equals(commit.getInfo().get(name))){
             System.exit(0);
         }
-        HashMap<String, Stage> sites;
-        sites = readObject(INDEX, HashMap.class);
         sites.put(name, new Stage(hash, removed));
         writeObject(INDEX, sites);
         File added = join(OBJECTS, hash);
@@ -171,7 +173,8 @@ public class Repository {
             restrictedDelete(removedFile);
         }
         if (!removed) {
-            throw error("No reason to remove the file.");
+            System.out.println("No reason to remove the file.");
+            System.exit(0);
         }
     }
 
@@ -209,7 +212,8 @@ public class Repository {
             }
         }
         if (commit == null) {
-            throw error("No commit with that id exists.");
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
         }
         return commit;
     }
@@ -388,7 +392,7 @@ public class Repository {
             }
         }
         for (String fileName : targetCommit.getInfo().keySet()) {
-            checkout(fileName);
+            checkout(targetId ,fileName, targetBranch);
         }
         writeObject(HEAD, target);
         writeObject(INDEX, new HashMap<String, Stage>());
