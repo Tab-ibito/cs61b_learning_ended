@@ -10,8 +10,8 @@ import static gitlet.Utils.*;
 
 /**
  * Represents a gitlet repository.
- *
- *  does at a high level.
+ * <p>
+ * does at a high level.
  *
  * @author Tab_1bit0
  */
@@ -83,18 +83,23 @@ public class Repository {
     public static void addFile(String name, boolean removed) {
         File stagingFile = new File(CWD, name);
         if (!stagingFile.exists()) {
-            throw error("File does not exist.");
+            System.out.println("File does not exist.");
+            System.exit(0);
         }
         byte[] inp = readContents(stagingFile);
+        Commit commit = getCurrentCommit();
         String hash = sha1(inp);
+        if(commit.getInfo().containsKey(name) && hash.equals(commit.getInfo().get(name))){
+            System.exit(0);
+        }
         HashMap<String, Stage> sites;
         sites = readObject(INDEX, HashMap.class);
         sites.put(name, new Stage(hash, removed));
         writeObject(INDEX, sites);
-        File ADDED = join(OBJECTS, hash);
+        File added = join(OBJECTS, hash);
         try {
-            ADDED.createNewFile();
-            writeContents(ADDED, inp);
+            added.createNewFile();
+            writeContents(added, inp);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -154,8 +159,8 @@ public class Repository {
         boolean removed = false;
         File removedFile = join(CWD, fileName);
         HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
-        HashMap<String, Stage> removedItem = readObject(INDEX, HashMap.class);
-        if(removedItem != null){
+        Stage removedItem = sites.remove(fileName);
+        if (removedItem != null) {
             removed = true;
             writeObject(INDEX, sites);
         }
@@ -343,7 +348,8 @@ public class Repository {
     public static void checkout(String commitId, String fileName, File branch) {
         Commit commit = getCommit(commitId, branch);
         if (!commit.getInfo().containsKey(fileName)) {
-            throw error("File does not exist in that commit.");
+            System.out.println("File does not exist in that commit.");
+            System.exit(0);
         }
         String index = commit.getInfo().get(fileName);
         File fileInObjects = join(OBJECTS, index);
@@ -361,8 +367,8 @@ public class Repository {
 
     public static void switchBranch(String target) {
         String branchName = readObject(HEAD, String.class);
-        File TARGET = join(HEADS, target);
-        LinkedList<String> history = readObject(TARGET, LinkedList.class);
+        File targetBranch = join(HEADS, target);
+        LinkedList<String> history = readObject(targetBranch, LinkedList.class);
         String targetId = history.getFirst();
         File targetFile = join(OBJECTS, targetId);
         Commit targetCommit = readObject(targetFile, Commit.class);
@@ -371,7 +377,7 @@ public class Repository {
             System.out.println("No need to checkout the current branch.");
             System.exit(0);
         }
-        if (!TARGET.exists()) {
+        if (!targetBranch.exists()) {
             System.out.println("No such branch exists.");
             System.exit(0);
         }
@@ -389,29 +395,29 @@ public class Repository {
     }
 
     public static void createBranch(String branchName) {
-        File TARGET = join(HEADS, branchName);
+        File targetBranch = join(HEADS, branchName);
         File branch = getCurrentBranchFile();
-        if (TARGET.exists()) {
+        if (targetBranch.exists()) {
             throw error("A branch with that name already exists.");
         }
         try {
-            TARGET.createNewFile();
+            targetBranch.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
         LinkedList<String> history = readObject(branch, LinkedList.class);
-        writeObject(TARGET, history);
+        writeObject(targetBranch, history);
     }
 
     public static void removeBranch(String target) {
-        File TARGET = join(HEADS, target);
-        if (!TARGET.exists()) {
+        File targetBranch = join(HEADS, target);
+        if (!targetBranch.exists()) {
             throw error("A branch with that name does not exist.");
         }
         if (target.equals(readObject(HEAD, String.class))) {
             throw error("Cannot remove the current branch.");
         }
-        TARGET.delete();
+        targetBranch.delete();
     }
 
     public static void reset(String commitId) {

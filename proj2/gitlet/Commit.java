@@ -45,6 +45,7 @@ public class Commit implements Serializable {
             HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
             Iterator<String> iter = sites.keySet().iterator();
             while (iter.hasNext()) {
+                changed = true;
                 String i = iter.next();
                 if (!sites.get(i).removed) {
                     info.put(i, sites.get(i).value);
@@ -52,7 +53,6 @@ public class Commit implements Serializable {
                     blacklist.add(i);
                 }
             }
-            changed = true;
         } catch (Exception ignored) {
         } finally {
             try {

@@ -39,7 +39,7 @@ public class Main {
                 gitlet.Repository.addFile(fileName);
                 break;
             case "commit":
-                if (args.length == 1) {
+                if (args.length == 1 || args.length == 2 && args[1].isEmpty()) {
                     System.out.println("Please enter a commit message.");
                     System.exit(0);
                 }
