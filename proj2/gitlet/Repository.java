@@ -504,10 +504,10 @@ public class Repository {
                 writeContents(conflictFile, "<<<<<<< HEAD\n", currentFileContent, "\n=======\n", givenFileContent, "\n>>>>>>>");
                 addFile(i);
             }
-            System.out.println("Merged " + givenBranch + " into " + currentBranch + ".");
-            if (status) {
-                System.out.println("Encountered a merge conflict.");
-            }
+        }
+        System.out.println("Merged " + givenBranch + " into " + currentBranch + ".");
+        if (status) {
+            System.out.println("Encountered a merge conflict.");
         }
     }
 
