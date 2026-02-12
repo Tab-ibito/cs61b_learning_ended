@@ -44,6 +44,7 @@ public class Repository {
     static class Stage implements Serializable {
         String value;
         boolean removed;
+
         Stage(String val, boolean rm) {
             value = val;
             removed = rm;
@@ -176,37 +177,39 @@ public class Repository {
         return commit;
     }
 
-    private static String getCurrentCommitId(){
+    private static String getCurrentCommitId() {
         File BRANCH = getCurrentBranchFile();
         LinkedList<String> history = readObject(BRANCH, LinkedList.class);
         String commitId = history.getFirst();
         return commitId;
     }
-    private static Commit getCommit(String exceptedId, File BRANCH){
+
+    private static Commit getCommit(String exceptedId, File BRANCH) {
         LinkedList<String> history = readObject(BRANCH, LinkedList.class);
         Commit commit = null;
-        if(exceptedId.length()==UID_LENGTH && history.contains(exceptedId)){
+        if (exceptedId.length() == UID_LENGTH && history.contains(exceptedId)) {
             commit = getCommitById(exceptedId);
             return commit;
         }
-        if(exceptedId.length()<UID_LENGTH){
+        if (exceptedId.length() < UID_LENGTH) {
             int count = 0;
-            for(String historyId : history){
-                if (historyId.indexOf(exceptedId)==0){
+            for (String historyId : history) {
+                if (historyId.indexOf(exceptedId) == 0) {
                     count++;
                     commit = getCommitById(historyId);
                 }
             }
-            if(count > 1){
-                throw error("ambiguous argument "+exceptedId+": unknown revision or path not in the working tree.");
+            if (count > 1) {
+                throw error("ambiguous argument " + exceptedId + ": unknown revision or path not in the working tree.");
             }
         }
-        if (commit==null){
+        if (commit == null) {
             throw error("No commit with that id exists.");
         }
         return commit;
     }
-    private static Commit getCommit(String exceptedId){
+
+    private static Commit getCommit(String exceptedId) {
         return getCommit(exceptedId, getCurrentBranchFile());
     }
 
@@ -220,7 +223,7 @@ public class Repository {
         return Sites.keySet();
     }
 
-    private static void printStringList(List<String> printed){
+    private static void printStringList(List<String> printed) {
         for (int i = 0; i < printed.toArray().length; i++) {
             System.out.println(printed.toArray()[i]);
         }
@@ -256,8 +259,8 @@ public class Repository {
         String branchName = readObject(HEAD, String.class);
         List<String> printed = plainFilenamesIn(HEADS);
         for (int i = 0; i < printed.toArray().length; i++) {
-            if(branchName.equals(printed.toArray()[i])){
-                System.out.println("*"+printed.toArray()[i]);
+            if (branchName.equals(printed.toArray()[i])) {
+                System.out.println("*" + printed.toArray()[i]);
                 continue;
             }
             System.out.println(printed.toArray()[i]);
@@ -323,23 +326,23 @@ public class Repository {
         return result;
     }
 
-    public static void checkout(String fileName){
+    public static void checkout(String fileName) {
         String commitId = getCurrentCommitId();
         checkout(commitId, fileName, getCurrentBranchFile());
     }
 
-    public static void checkout(String fileName, File BRANCH){
+    public static void checkout(String fileName, File BRANCH) {
         String commitId = getCurrentCommitId();
         checkout(commitId, fileName, BRANCH);
     }
 
-    public static void checkout(String commitId, String fileName){
+    public static void checkout(String commitId, String fileName) {
         checkout(commitId, fileName, getCurrentBranchFile());
     }
 
-    public static void checkout(String commitId, String fileName, File BRANCH){
+    public static void checkout(String commitId, String fileName, File BRANCH) {
         Commit commit = getCommit(commitId, BRANCH);
-        if(!commit.getInfo().containsKey(fileName)){
+        if (!commit.getInfo().containsKey(fileName)) {
             throw error("File does not exist in that commit.");
         }
         String index = commit.getInfo().get(fileName);
@@ -347,16 +350,16 @@ public class Repository {
         byte[] fileContent = readContents(fileInObjects);
         File file = join(CWD, fileName);
         try {
-            if(!file.exists()){
+            if (!file.exists()) {
                 file.createNewFile();
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         writeContents(file, fileContent);
     }
 
-    public static void switchBranch(String target){
+    public static void switchBranch(String target) {
         String branchName = readObject(HEAD, String.class);
         File TARGET = join(HEADS, target);
         LinkedList<String> history = readObject(TARGET, LinkedList.class);
@@ -364,31 +367,31 @@ public class Repository {
         File targetFile = join(OBJECTS, targetId);
         Commit targetCommit = readObject(targetFile, Commit.class);
         Set<String> tracking = getTrackingFileNames();
-        if (branchName.equals(target)){
+        if (branchName.equals(target)) {
             System.out.println("No need to checkout the current branch.");
             System.exit(0);
         }
-        if(!TARGET.exists()){
+        if (!TARGET.exists()) {
             System.out.println("No such branch exists.");
             System.exit(0);
         }
-        for(String i : targetCommit.getInfo().keySet()){
-            if(!tracking.contains(i)){
+        for (String i : targetCommit.getInfo().keySet()) {
+            if (!tracking.contains(i)) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             }
         }
-        for(String fileName : targetCommit.getInfo().keySet()){
+        for (String fileName : targetCommit.getInfo().keySet()) {
             checkout(fileName);
         }
         writeObject(HEAD, target);
         writeObject(INDEX, new HashMap<String, Stage>());
     }
 
-    public static void createBranch(String branchName){
+    public static void createBranch(String branchName) {
         File TARGET = join(HEADS, branchName);
         File BRANCH = getCurrentBranchFile();
-        if(TARGET.exists()){
+        if (TARGET.exists()) {
             throw error("A branch with that name already exists.");
         }
         try {
@@ -400,36 +403,36 @@ public class Repository {
         writeObject(TARGET, history);
     }
 
-    public static void removeBranch(String target){
+    public static void removeBranch(String target) {
         File TARGET = join(HEADS, target);
-        if(!TARGET.exists()){
+        if (!TARGET.exists()) {
             throw error("A branch with that name does not exist.");
         }
-        if (target.equals(readObject(HEAD, String.class))){
+        if (target.equals(readObject(HEAD, String.class))) {
             throw error("Cannot remove the current branch.");
         }
         TARGET.delete();
     }
 
-    public static void reset(String commitId){
+    public static void reset(String commitId) {
         File BRANCH = getCurrentBranchFile();
         Commit commit = getCommit(commitId);
         Commit currentCommit = getCurrentCommit();
         commit.getInfo();
-        for(String i : currentCommit.getInfo().keySet()){
+        for (String i : currentCommit.getInfo().keySet()) {
             if (!commit.getInfo().containsKey(i)) {
                 removeFile(i);
             }
         }
         LinkedList<String> history = readObject(BRANCH, LinkedList.class);
-        while (!history.getFirst().equals(commit.getId())){
+        while (!history.getFirst().equals(commit.getId())) {
             history.removeFirst();
         }
         writeObject(BRANCH, history);
         writeObject(INDEX, new HashMap<String, Stage>());
     }
 
-    public static void merge(String givenBranch){
+    public static void merge(String givenBranch) {
         String currentBranch = readObject(HEAD, String.class);
         File givenFile = join(HEADS, givenBranch);
         LinkedList<String> currentHistory = readObject(getCurrentBranchFile(), LinkedList.class);
@@ -439,8 +442,8 @@ public class Repository {
         HashMap<String, String> splitCommitInfo = null;
         HashMap<String, String> pool = new HashMap<>();
         boolean status = false;
-        for (String i : currentHistory){
-            if(givenHistory.contains(i)){
+        for (String i : currentHistory) {
+            if (givenHistory.contains(i)) {
                 splitCommitInfo = getCommitById(i).getInfo();
                 break;
             }
@@ -448,21 +451,21 @@ public class Repository {
         pool.putAll(currentCommitInfo);
         pool.putAll(givenCommitInfo);
         pool.putAll(splitCommitInfo);
-        for (String i : pool.keySet()){
-            if(!isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
-                checkout(i,givenBranch);
+        for (String i : pool.keySet()) {
+            if (!isModified(i, splitCommitInfo, currentCommitInfo) && isModified(i, splitCommitInfo, givenCommitInfo)) {
+                checkout(i, givenBranch);
                 addFile(i);
             }
-            if(!givenCommitInfo.containsKey(i) && !isModified(i, splitCommitInfo, currentCommitInfo)){
+            if (!givenCommitInfo.containsKey(i) && !isModified(i, splitCommitInfo, currentCommitInfo)) {
                 removeFile(i);
             }
         }
-        for (String i : givenCommitInfo.keySet()){
-            if(!splitCommitInfo.containsKey(i) && !currentCommitInfo.containsKey(i)){
-                checkout(i,givenBranch);
+        for (String i : givenCommitInfo.keySet()) {
+            if (!splitCommitInfo.containsKey(i) && !currentCommitInfo.containsKey(i)) {
+                checkout(i, givenBranch);
                 addFile(i);
             }
-            if(isConflict(i, currentCommitInfo, givenCommitInfo)){
+            if (isConflict(i, currentCommitInfo, givenCommitInfo)) {
                 File conflictFile = join(CWD, i);
                 String givenIndex = givenCommitInfo.get(i);
                 String currentIndex = currentCommitInfo.get(i);
@@ -471,32 +474,32 @@ public class Repository {
                 byte[] givenFileContent = readContents(givenContent);
                 byte[] currentFileContent = readContents(currentContent);
                 try {
-                    if(!conflictFile.exists()){
+                    if (!conflictFile.exists()) {
                         conflictFile.createNewFile();
                     }
-                }catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 status = true;
                 addFile(i);
                 writeContents(conflictFile, "<<<<<<< HEAD\n", currentFileContent, "\n=======\n", givenFileContent, "\n>>>>>>>");
             }
-            System.out.println("Merged "+givenBranch+" into "+currentBranch+".");
-            if(status){
+            System.out.println("Merged " + givenBranch + " into " + currentBranch + ".");
+            if (status) {
                 System.out.println("Encountered a merge conflict.");
             }
         }
     }
 
-    private static boolean isModified(String i, HashMap<String, String> origin, HashMap<String, String> info){
+    private static boolean isModified(String i, HashMap<String, String> origin, HashMap<String, String> info) {
         return info.containsKey(i) && origin.get(i).equals(info.get(i));
     }
 
-    public static boolean isConflict(String i, HashMap<String, String> current, HashMap<String, String> given){
+    public static boolean isConflict(String i, HashMap<String, String> current, HashMap<String, String> given) {
         return given.containsKey(i) && current.containsKey(i) && !given.get(i).equals(current.get(i));
     }
 
-    protected static File getCurrentBranchFile(){
+    protected static File getCurrentBranchFile() {
         String branchName = readObject(HEAD, String.class);
         return join(HEADS, branchName);
     }
