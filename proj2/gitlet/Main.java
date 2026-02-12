@@ -36,6 +36,7 @@ public class Main {
                     System.exit(0);
                 }
                 String fileName = args[1];
+                gitlet.Repository.checkEnvironment();
                 gitlet.Repository.addFile(fileName);
                 break;
             case "commit":
@@ -47,6 +48,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 gitlet.Repository.commitFile(args[1]);
                 break;
             case "rm":
@@ -54,6 +56,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 gitlet.Repository.removeFile(args[1]);
                 break;
             case "log":
@@ -61,6 +64,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 Repository.printLog();
                 break;
             case "global-log":
@@ -68,6 +72,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 Repository.printGlobalLog();
                 break;
             case "find":
@@ -75,6 +80,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 Repository.findCommit(args[1]);
                 break;
             case "status":
@@ -82,14 +88,18 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 Repository.printStatus();
                 break;
             case "checkout":
                 if (args.length == 3 && args[1].equals("--")) {
+                    gitlet.Repository.checkEnvironment();
                     Repository.checkout(args[2]);
                 } else if (args.length == 4 && args[2].equals("--")) {
+                    gitlet.Repository.checkEnvironment();
                     Repository.checkout(args[1], args[3]);
                 } else if (args.length == 2) {
+                    gitlet.Repository.checkEnvironment();
                     Repository.switchBranch(args[1]);
                 } else {
                     System.out.println("Incorrect operands.");
@@ -101,6 +111,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 Repository.createBranch(args[1]);
                 break;
             case "rm-branch":
@@ -108,6 +119,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 Repository.removeBranch(args[1]);
                 break;
             case "reset":
@@ -115,6 +127,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 Repository.reset(args[1]);
                 break;
             case "merge":
@@ -122,6 +135,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
+                gitlet.Repository.checkEnvironment();
                 Repository.merge(args[1]);
                 break;
             default:

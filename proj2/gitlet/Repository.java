@@ -518,6 +518,13 @@ public class Repository {
         }
     }
 
+    public static void checkEnvironment(){
+        if (!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            System.exit(0);
+        }
+    }
+
     private static boolean isModified(String i, HashMap<String, String> origin, HashMap<String, String> info) {
         return origin.containsKey(i) && info.containsKey(i) && !origin.get(i).equals(info.get(i));
     }
