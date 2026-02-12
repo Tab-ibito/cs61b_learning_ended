@@ -7,7 +7,7 @@ import static gitlet.Utils.error;
 /**
  * Driver class for Gitlet, a subset of the Git version-control system.
  *
- * @author TODO
+ * @author Tab_1bit0
  */
 public class Main {
     /**
@@ -17,63 +17,70 @@ public class Main {
     public static void main(String[] args) {
         //args = new String[]{"rm","a.txt"};
         if (args.length == 0) {
-            throw error("Please enter a command.");
+            System.out.println("Please enter a command.");
+            System.exit(0);
         }
-        //TODO: what if args is empty?
         String firstArg = args[0];
         //String firstArg = "init";
         switch (firstArg) {
             case "init":
-                // TODO: handle the `init` command
                 if (args.length != 1) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 gitlet.Repository.initialize();
                 break;
             case "add":
-                // TODO: handle the `add [filename]` command
                 if (args.length != 2) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 String fileName = args[1];
                 gitlet.Repository.addFile(fileName);
                 break;
             case "commit":
                 if (args.length == 1) {
-                    throw error("Please enter a commit message.");
+                    System.out.println("Please enter a commit message.");
+                    System.exit(0);
                 }
                 if (args.length > 2) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 gitlet.Repository.commitFile(args[1]);
                 break;
             case "rm":
                 if (args.length != 2) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 gitlet.Repository.removeFile(args[1]);
                 break;
             case "log":
                 if (args.length != 1) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 Repository.printLog();
                 break;
             case "global-log":
                 if (args.length != 1) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 Repository.printGlobalLog();
                 break;
             case "find":
                 if (args.length != 2) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 Repository.findCommit(args[1]);
                 break;
             case "status":
                 if (args.length != 1) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 Repository.printStatus();
                 break;
@@ -88,30 +95,35 @@ public class Main {
                 break;
             case "branch":
                 if (args.length != 2) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 Repository.createBranch(args[1]);
                 break;
             case "rm-branch":
                 if (args.length != 2) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 Repository.removeBranch(args[1]);
                 break;
             case "reset":
                 if (args.length != 2) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 Repository.reset(args[1]);
                 break;
             case "merge":
                 if (args.length != 2) {
-                    throw error("Incorrect operands.");
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
                 }
                 Repository.merge(args[1]);
                 break;
             default:
-                throw error("No command with that name exists.");
+                System.out.println("No command with that name exists.");
+                System.exit(0);
         }
     }
 }

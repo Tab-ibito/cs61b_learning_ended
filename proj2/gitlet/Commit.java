@@ -1,7 +1,5 @@
 package gitlet;
 
-// TODO: any imports you need here
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -13,14 +11,13 @@ import static java.lang.String.format;
 
 /**
  * Represents a gitlet commit object.
- *  TODO: It's a good idea to give a description here of what else this Class
+ *
  *  does at a high level.
  *
  * @author Tab_1bit0
  */
 public class Commit implements Serializable {
     /**
-     * TODO: add instance variables here.
      *
      * List all instance variables of the Commit class here with a useful
      * comment above them describing what that variable represents and how that
@@ -37,7 +34,6 @@ public class Commit implements Serializable {
     private String id;
     private boolean changed = false;
 
-    /* TODO: fill in the rest of this class. */
     public Commit(String msg) {
         message = msg;
         Date time = new Date();
@@ -46,12 +42,12 @@ public class Commit implements Serializable {
         List<Object> material = new ArrayList<>();
         List<String> blacklist = new ArrayList<>();
         try {
-            HashMap<String, Stage> Sites = readObject(INDEX, HashMap.class);
-            Iterator<String> iter = Sites.keySet().iterator();
+            HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
+            Iterator<String> iter = sites.keySet().iterator();
             while (iter.hasNext()) {
                 String i = iter.next();
-                if (!Sites.get(i).removed) {
-                    info.put(i, Sites.get(i).value);
+                if (!sites.get(i).removed) {
+                    info.put(i, sites.get(i).value);
                 } else {
                     blacklist.add(i);
                 }
