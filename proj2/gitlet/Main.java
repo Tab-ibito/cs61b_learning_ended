@@ -23,7 +23,7 @@ public class Main {
             case "init":
                 // TODO: handle the `init` command
                 if(args.length!=1){
-                    error("Incorrect operands.");
+                    throw error("Incorrect operands.");
                 }
                 gitlet.Repository.initialize();
                 break;
@@ -96,8 +96,16 @@ public class Main {
                 Repository.removeBranch(args[1]);
                 break;
             case "reset":
+                if(args.length!=2){
+                    throw error("Incorrect operands.");
+                }
+                Repository.reset(args[1]);
                 break;
             case "merge":
+                if(args.length!=2){
+                    throw error("Incorrect operands.");
+                }
+                Repository.merge(args[1]);
                 break;
             default:
                 throw error("No command with that name exists.");
