@@ -89,7 +89,7 @@ public class Repository {
         byte[] inp = readContents(stagingFile);
         Commit commit = getCurrentCommit();
         String hash = sha1(inp);
-        if(commit.getInfo().containsKey(name) && hash.equals(commit.getInfo().get(name))){
+        if(!removed && commit.getInfo().containsKey(name) && hash.equals(commit.getInfo().get(name))){
             System.exit(0);
         }
         HashMap<String, Stage> sites;
