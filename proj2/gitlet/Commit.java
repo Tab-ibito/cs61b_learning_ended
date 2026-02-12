@@ -2,19 +2,23 @@ package gitlet;
 
 // TODO: any imports you need here
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 import static gitlet.Repository.*;
 import static gitlet.Utils.*;
 import static java.lang.String.format;
 
-/** Represents a gitlet commit object.
+/**
+ * Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
- *  @author Tab_1bit0
+ * @author Tab_1bit0
  */
-public class Commit {
+public class Commit implements Serializable {
     /**
      * TODO: add instance variables here.
      *
@@ -23,51 +27,84 @@ public class Commit {
      * variable is used. We've provided one example for `message`.
      */
 
-    /** The message of this Commit. */
+    /**
+     * The message of this Commit.
+     */
     private String message;
     private String date;
-    private List<Object> info = new ArrayList<>();
+    private HashMap<String, String> info = new HashMap<>();
     private String fatherId;
     private String id;
+    private boolean changed = false;
+
     /* TODO: fill in the rest of this class. */
-    public Commit(String msg){
+    public Commit(String msg) {
         message = msg;
         Date time = new Date();
         //Thu Nov 9 20:00:05 2017 -0800
-        date = format(Locale.US,"%ta %tb %td %tT %tY %tZ",time,time,time,time,time,time);
-        try{
-            Iterator<String> iter = readObject(INDEX, HashMap.class).keySet().iterator();
-            while (iter.hasNext()){
-                info.add(iter.next());
+        date = format(Locale.US, "%ta %tb %td %tT %tY %tz", time, time, time, time, time, time);
+        List<Object> material = new ArrayList<>();
+        List<String> blacklist = new ArrayList<>();
+        try {
+            HashMap<String, Stage> Sites = readObject(INDEX, HashMap.class);
+            Iterator<String> iter = Sites.keySet().iterator();
+            while (iter.hasNext()) {
+                String i = iter.next();
+                if (!Sites.get(i).removed) {
+                    info.put(i, Sites.get(i).value);
+                } else {
+                    blacklist.add(i);
+                }
             }
-            LinkedHashMap<String, Commit> history = readObject(MASTER, LinkedHashMap.class);
-            fatherId = Utils.sha1(history.entrySet().iterator().next());
-            info.add(fatherId);
-            info.add(message);
-            info.add(date);
-        } catch (Exception e) {
-            info.add(message);
-            info.add(date);
+            changed = true;
+        } catch (Exception ignored) {
+        } finally {
+            try {
+                LinkedList<String> history = readObject(Repository.getCurrentBranchFile(), LinkedList.class);
+                fatherId = history.getFirst();
+                File commitFile = join(OBJECTS, fatherId);
+                Commit commit = readObject(commitFile, Commit.class);
+                Iterator<String> iter = commit.getInfo().keySet().iterator();
+                while (iter.hasNext()) {
+                    String i = iter.next();
+                    if (!blacklist.contains(i) && info.get(i) == null) {
+                        info.put(i, commit.getInfo().get(i));
+                    }
+                }
+                material.add(fatherId);
+                material.addAll(info.values());
+            } catch (Exception e) {
+                material.add(message);
+                material.add(date);
+            }
         }
-        id=sha1(info);
-        writeLog();
+        id = sha1(material);
+        File commitFile = join(OBJECTS, id);
+        try {
+            commitFile.createNewFile();
+            writeObject(commitFile, this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
-    private void writeLog(){
-        ArrayList<Object> result = new ArrayList<>();
-        result.add("===");
-        result.add("commit "+id);
-        result.add("Date: "+date);
-        result.add(message);
-        result.add("");
-        try{
-            result.addAll(readObject(LOGS, ArrayList.class));
-        } catch (Exception ignored) {
 
-        }
-        writeObject(LOGS,result);
+    public String getDate() {
+        return date;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public boolean isChanged() {
+        return changed;
+    }
+
+    public HashMap<String, String> getInfo() {
+        return info;
     }
 }
