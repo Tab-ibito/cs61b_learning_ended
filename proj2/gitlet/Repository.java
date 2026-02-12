@@ -394,10 +394,13 @@ public class Repository {
         Commit targetCommit = readObject(targetFile, Commit.class);
         Set<String> tracking = getTrackingFileNames();
         for (String i : targetCommit.getInfo().keySet()) {
-            if (!tracking.contains(i)) {
+            if (!tracking.contains(i) && join(CWD, i).exists()) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             }
+        }
+        for (String fileName : tracking){
+            removeFile(fileName);
         }
         for (String fileName : targetCommit.getInfo().keySet()) {
             checkout(targetId ,fileName, targetBranch);
