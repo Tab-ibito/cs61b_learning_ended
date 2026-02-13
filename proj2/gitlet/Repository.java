@@ -1,5 +1,7 @@
 package gitlet;
 
+import afu.org.checkerframework.checker.igj.qual.I;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -451,6 +453,10 @@ public class Repository {
                 System.exit(0);
             }
         }
+        HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
+        if(sites.size()==0){
+            System.out.println("You have uncommitted changes.");
+        }
         for (String i : target.getInfo().keySet()){
             checkout(commitId, i);
         }
@@ -499,11 +505,11 @@ public class Repository {
             boolean modifiedGiven = isModified(i, splitCommitInfo, givenCommitInfo);
             boolean modifiedCurrent = isModified(i, splitCommitInfo, currentCommitInfo);
             boolean conflict = isConflict(i,givenCommitInfo,currentCommitInfo);
-            if (inSplit && !modifiedCurrent && modifiedGiven){
+            if (inSplit && inCurrent && inGiven && !modifiedCurrent && modifiedGiven){
                 checkout(givenHistory.getFirst(), i);
                 addFile(i);
             }
-            if (inSplit && !inGiven && !modifiedCurrent){
+            if (inSplit && !inGiven && inCurrent && !modifiedCurrent){
                 removeFile(i);
             }
             if (inGiven && !inSplit && !inCurrent){
