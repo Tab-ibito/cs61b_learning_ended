@@ -3,6 +3,7 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.invoke.SwitchPoint;
 import java.util.*;
 
 import static gitlet.Utils.*;
@@ -451,10 +452,6 @@ public class Repository {
                 System.exit(0);
             }
         }
-        HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
-        if(sites.size()==0){
-            System.out.println("You have uncommitted changes.");
-        }
         for (String i : target.getInfo().keySet()){
             checkout(commitId, i);
         }
@@ -478,10 +475,12 @@ public class Repository {
         HashMap<String, String> currentCommitInfo = getCurrentCommit().getInfo();
         HashMap<String, String> givenCommitInfo = getCommitById(givenHistory.getFirst()).getInfo();
         HashMap<String, String> splitCommitInfo = null;
+        Commit splitCommit = null;
         HashMap<String, String> pool= new HashMap<>();
         boolean status = false;
         for (String i : currentHistory) {
             if (givenHistory.contains(i)) {
+                splitCommit=getCommitById(i);
                 splitCommitInfo = getCommitById(i).getInfo();
                 break;
             }
@@ -495,6 +494,19 @@ public class Repository {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             }
+        }
+        HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
+        if(sites.isEmpty()){
+            System.out.println("You have uncommitted changes.");
+            System.exit(0);
+        }
+        if(splitCommit.getId().equals(getCommitById(givenHistory.getFirst()).getId())){
+            System.out.println("Given branch is an ancestor of the current branch.");
+            System.exit(0);
+        }
+        if(splitCommit.getId().equals(getCurrentCommitId())){
+            System.out.println("Current branch fast-forwarded.");
+            System.exit(0);
         }
         for (String i : pool.keySet()) {
             boolean inSplit = in(i,splitCommitInfo);
