@@ -717,7 +717,7 @@ public class Repository {
         HashMap<String, Integer> ancestors = getAllAncestors(getCurrentCommitId());
         if(ancestors.containsKey(getRemoteId(env, remoteBranchName))){
             for (String i : ancestors.keySet()){
-                uploadFile(env, i);
+                uploadCommit(env, i);
                 for (String j : getCommitById(i).getInfo().values()){
                     uploadFile(env, j);
                 }
@@ -738,10 +738,34 @@ public class Repository {
         writeObject(copyFile, content);
     }
 
+    private static void copyRemoteCommit(Remote env, String id){
+        File originalFile = join(env.objects, id);
+        File copyFile = join(OBJECTS, id);
+        Commit content = readObject(originalFile, Commit.class);
+        try {
+            copyFile.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        writeObject(copyFile, content);
+    }
+
     private static void uploadFile(Remote env, String id){
         File originalFile = join(OBJECTS, id);
         File copyFile = join(env.objects, id);
         byte[] content = readContents(originalFile);
+        try {
+            copyFile.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        writeObject(copyFile, content);
+    }
+
+    private static void uploadCommit(Remote env, String id){
+        File originalFile = join(OBJECTS, id);
+        File copyFile = join(env.objects, id);
+        Commit content = readObject(originalFile, Commit.class);
         try {
             copyFile.createNewFile();
         } catch (Exception e) {
@@ -778,7 +802,7 @@ public class Repository {
             if (commit.getSecondParentId() != null) {
                 bfs.add(commit.getSecondParentId());
             }
-            copyRemoteFile(env, pointer);
+            copyRemoteCommit(env, pointer);
             for(String i : commit.getInfo().values()){
                 copyRemoteFile(env, i);
             }
