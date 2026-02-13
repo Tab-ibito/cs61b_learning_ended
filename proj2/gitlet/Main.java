@@ -138,6 +138,46 @@ public class Main {
                 gitlet.Repository.checkEnvironment();
                 Repository.merge(args[1]);
                 break;
+            case "add-remote":
+                if (args.length != 3) {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                gitlet.Repository.checkEnvironment();
+                Repository.addRemote(args[1],args[2]);
+                break;
+            case "rm-remote":
+                if (args.length != 3) {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                gitlet.Repository.checkEnvironment();
+                Repository.removeRemote(args[1],args[2]);
+                break;
+            case "push":
+                if (args.length != 3) {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                gitlet.Repository.checkEnvironment();
+                Repository.pushRemote(args[1],args[2]);
+                break;
+            case "fetch":
+                if (args.length != 3) {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                gitlet.Repository.checkEnvironment();
+                Repository.fetchRemote(args[1],args[2]);
+                break;
+            case "pull":
+                if (args.length != 3) {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                gitlet.Repository.checkEnvironment();
+                Repository.pullRemote(args[1],args[2]);
+                break;
             default:
                 System.out.println("No command with that name exists.");
                 System.exit(0);

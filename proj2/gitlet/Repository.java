@@ -39,6 +39,7 @@ public class Repository {
     static final File HEADS = join(REFS, "heads");
     static final File REMOTES = join(REFS, "remotes");
     static final File MASTER = join(HEADS, "master");
+    static final File CONFIG = join(GITLET_DIR, "config");
 
     static class Stage implements Serializable {
         String value;
@@ -47,6 +48,30 @@ public class Repository {
         Stage(String val, boolean rm) {
             value = val;
             removed = rm;
+        }
+    }
+
+    static class Remote {
+        File dir;
+        File head;
+        File index;
+        File objects;
+        File refs;
+        File remotes;
+        File heads;
+
+        Remote(String path){
+            try {
+                dir = join(CWD, path).getCanonicalFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            head = join(dir, "HEAD");
+            index = join(dir, "index");
+            objects = join(dir, "objects");
+            refs = join(dir, "refs");
+            remotes = join(refs, "remotes");
+            heads = join(refs, "heads");
         }
     }
 
@@ -61,8 +86,10 @@ public class Repository {
                 HEAD.createNewFile();
                 INDEX.createNewFile();
                 MASTER.createNewFile();
+                CONFIG.createNewFile();
                 writeObject(HEAD, "master");
                 writeObject(INDEX, new HashMap<String, Stage>());
+                writeObject(CONFIG, new HashMap<String, String>());
                 Commit initialCommit = new Commit("initial commit", false, null);
                 LinkedList<String> history = new LinkedList<>();
                 history.addFirst(initialCommit.getId());
@@ -628,5 +655,132 @@ public class Repository {
     protected static File getCurrentBranchFile() {
         String branchName = readObject(HEAD, String.class);
         return join(HEADS, branchName);
+    }
+
+    public static void addRemote(String name, String location) {
+        HashMap<String, String> info = readObject(CONFIG, HashMap.class);
+        if(info.containsKey(name)){
+            System.out.println("A remote with that name already exists.");
+            System.exit(0);
+        }
+        info.put(name, location);
+        writeObject(CONFIG, info);
+    }
+    public static void removeRemote(String name, String location) {
+        HashMap<String, String> info = readObject(CONFIG, HashMap.class);
+        String removed = info.remove(name);
+        if(removed==null){
+            System.out.println("A remote with that name does not exist.");
+            System.exit(0);
+        }
+        writeObject(CONFIG, info);
+    }
+
+    private static Remote getRemoteEnv(String name){
+        HashMap<String, String> info = readObject(CONFIG, HashMap.class);
+        if(info.get(name)==null){
+            System.out.println("A remote with that name does not exist.");
+            System.exit(0);
+        }
+        return new Remote(info.get(name));
+    }
+
+    public static String getRemoteId(Remote env, String branch){
+        if(!env.dir.exists()){
+            System.out.println("Remote directory not found.");
+            System.exit(0);
+        }
+        File branchFile = join(env.heads, branch);
+        if(!branchFile.exists()){
+            System.out.println("That remote does not have that branch.");
+            System.exit(0);
+        }
+        LinkedList<String> remoteHistory = readObject(branchFile, LinkedList.class);
+        return remoteHistory.getFirst();
+    }
+
+    public static void pushRemote(String remoteName, String remoteBranchName){
+        Remote env = getRemoteEnv(remoteName);
+        File remoteBranchFile = join(HEADS, remoteName, remoteBranchName);
+        String remoteId = getRemoteId(env, remoteBranchName);
+        if(!remoteBranchFile.exists()){
+            System.out.println("Please pull down remote changes before pushing.");
+            System.exit(0);
+        }
+        LinkedList<String> result = readObject(getCurrentBranchFile(), LinkedList.class);
+        HashMap<String, Integer> ancestors = getAllAncestors(getCurrentCommitId());
+        if(ancestors.containsKey(getRemoteId(env, remoteBranchName))){
+            for (String i : ancestors.keySet()){
+                uploadFile(env, i);
+                for (String j : getCommitById(i).getInfo().values()){
+                    uploadFile(env, j);
+                }
+            }
+        }
+        writeObject(join(env.heads, remoteBranchName), result);
+    }
+
+    private static void copyRemoteFile(Remote env, String id){
+        File originalFile = join(env.objects, id);
+        File copyFile = join(OBJECTS, id);
+        byte[] content = readContents(originalFile);
+        try {
+            copyFile.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        writeObject(copyFile, content);
+    }
+
+    private static void uploadFile(Remote env, String id){
+        File originalFile = join(OBJECTS, id);
+        File copyFile = join(env.objects, id);
+        byte[] content = readContents(originalFile);
+        try {
+            copyFile.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        writeObject(copyFile, content);
+    }
+
+    private static Commit getRemoteCommitById(String id, Remote env) {
+        return readObject(join(env.objects, id), Commit.class);
+    }
+
+    public static void fetchRemote(String remoteName, String remoteBranchName){
+        Remote env = getRemoteEnv(remoteName);
+        String remoteId = getRemoteId(env, remoteBranchName);
+        File remoteBranchDir = join(HEADS, remoteName);
+        remoteBranchDir.mkdirs();
+        File remoteBranchFile = join(HEADS, remoteName, remoteBranchName);
+        LinkedList<String> remoteHistory = readObject(join(env.heads, remoteBranchName), LinkedList.class);
+        try {
+            remoteBranchFile.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        writeObject(remoteBranchFile, remoteHistory);
+        Queue<String> bfs = new ArrayDeque<>();
+        bfs.add(remoteId);
+        while (!bfs.isEmpty()) {
+            String pointer = bfs.remove();
+            Commit commit = getRemoteCommitById(pointer, env);
+            if (commit.getFatherId() != null) {
+                bfs.add(commit.getFatherId());
+            }
+            if (commit.getSecondParentId() != null) {
+                bfs.add(commit.getSecondParentId());
+            }
+            copyRemoteFile(env, pointer);
+            for(String i : commit.getInfo().values()){
+                copyRemoteFile(env, i);
+            }
+        }
+    }
+
+    public static void pullRemote(String remoteName, String remoteBranchName){
+        fetchRemote(remoteName, remoteBranchName);
+        merge(remoteBranchName);
     }
 }
