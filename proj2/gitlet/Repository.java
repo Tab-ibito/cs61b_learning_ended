@@ -480,7 +480,7 @@ public class Repository {
                 bfs.add(getCommitById(pointer).getFatherId());
                 depth.add(level + 1);
             }
-            if (getCommitById(id).getSecondParentId() != null) {
+            if (getCommitById(pointer).getSecondParentId() != null) {
                 bfs.add(getCommitById(pointer).getSecondParentId());
                 depth.add(level + 1);
             }
@@ -535,16 +535,16 @@ public class Repository {
         pool.putAll(givenCommitInfo);
         pool.putAll(splitCommitInfo);
         Set<String> tracking = getTrackingFileNames();
+        HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
+        if (!sites.isEmpty()) {
+            System.out.println("You have uncommitted changes.");
+            System.exit(0);
+        }
         for (String i : givenCommitInfo.keySet()) {
             if (!tracking.contains(i) && join(CWD, i).exists()) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             }
-        }
-        HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
-        if (!sites.isEmpty()) {
-            System.out.println("You have uncommitted changes.");
-            System.exit(0);
         }
         if (splitCommit.getId().equals(getCommitById(givenHistory.getFirst()).getId())) {
             System.out.println("Given branch is an ancestor of the current branch.");
