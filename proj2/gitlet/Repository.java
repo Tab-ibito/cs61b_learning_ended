@@ -496,7 +496,7 @@ public class Repository {
             }
         }
         HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
-        if(sites.isEmpty()){
+        if(!sites.isEmpty()){
             System.out.println("You have uncommitted changes.");
             System.exit(0);
         }
