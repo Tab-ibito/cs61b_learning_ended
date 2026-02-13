@@ -309,6 +309,9 @@ public class Repository {
         System.out.println("=== Branches ===");
         String branchName = readObject(HEAD, String.class);
         List<String> printed = plainFilenamesIn(HEADS);
+        if (printed != null) {
+            Collections.sort(printed);
+        }
         for (int i = 0; i < printed.toArray().length; i++) {
             if (branchName.equals(printed.toArray()[i])) {
                 System.out.println("*" + printed.toArray()[i]);
@@ -318,7 +321,6 @@ public class Repository {
         }
         List<String> stagedFiles = new ArrayList<>();
         List<String> removedFiles = new ArrayList<>();
-        System.out.println();
         HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
         for (String fileName : sites.keySet()) {
             if (!sites.get(fileName).removed) {
@@ -327,6 +329,7 @@ public class Repository {
                 removedFiles.add(fileName);
             }
         }
+        System.out.println();
         System.out.println("=== Staged Files ===");
         printStringList(stagedFiles);
         System.out.println();
@@ -339,6 +342,9 @@ public class Repository {
         System.out.println();
         System.out.println("=== Untracked Files ===");
         List<String> workingFiles = plainFilenamesIn(CWD);
+        if(workingFiles!=null){
+            Collections.sort(workingFiles);
+        }
         for (String i : workingFiles) {
             File working = join(CWD, i);
             if (!working.isDirectory() && !getStagingFileNames().contains(i) && !getTrackingFileNames().contains(i)) {
@@ -356,10 +362,10 @@ public class Repository {
                 File working = join(CWD, i);
                 byte[] inp = readContents(working);
                 if (!sha1(inp).equals(commit.getInfo().get(i))) {
-                    result.add(i);
+                    result.add(i+" (modified)");
                 }
             } else if (!workingFiles.contains(i) && !getStagingFileNames().contains(i)) {
-                result.add(i);
+                result.add(i+" (deleted)");
             }
         }
         HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
@@ -368,10 +374,10 @@ public class Repository {
                 File working = join(CWD, i);
                 byte[] inp = readContents(working);
                 if (!sha1(inp).equals(sites.get(i).value)) {
-                    result.add(i);
+                    result.add(i+" (modified)");
                 }
             } else if (!workingFiles.contains(i) && !sites.get(i).removed) {
-                result.add(i);
+                result.add(i+" (deleted)");
             }
         }
         return result;
@@ -666,7 +672,7 @@ public class Repository {
         info.put(name, location);
         writeObject(CONFIG, info);
     }
-    public static void removeRemote(String name, String location) {
+    public static void removeRemote(String name) {
         HashMap<String, String> info = readObject(CONFIG, HashMap.class);
         String removed = info.remove(name);
         if(removed==null){

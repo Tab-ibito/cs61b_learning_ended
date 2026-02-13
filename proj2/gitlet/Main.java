@@ -147,12 +147,12 @@ public class Main {
                 Repository.addRemote(args[1],args[2]);
                 break;
             case "rm-remote":
-                if (args.length != 3) {
+                if (args.length != 2) {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
                 gitlet.Repository.checkEnvironment();
-                Repository.removeRemote(args[1],args[2]);
+                Repository.removeRemote(args[1]);
                 break;
             case "push":
                 if (args.length != 3) {
