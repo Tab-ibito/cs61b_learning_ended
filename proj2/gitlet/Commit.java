@@ -31,50 +31,51 @@ public class Commit implements Serializable {
     private String date;
     private HashMap<String, String> info = new HashMap<>();
     private String fatherId = null;
+    private String secondParentId = null;
     private String id;
+    private boolean merge = false;
     private boolean changed = false;
-
-    public Commit(String msg) {
+    public Commit(String msg, boolean merging, String mergedBranch) {
+        merge = merging;
         message = msg;
         Date time = new Date();
         //Thu Nov 9 20:00:05 2017 -0800
         date = format(Locale.US, "%ta %tb %td %tT %tY %tz", time, time, time, time, time, time);
         List<Object> material = new ArrayList<>();
         List<String> blacklist = new ArrayList<>();
-        try {
             HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
-            Iterator<String> iter = sites.keySet().iterator();
-            while (iter.hasNext()) {
-                changed = true;
-                String i = iter.next();
-                if (!sites.get(i).removed) {
-                    info.put(i, sites.get(i).value);
-                } else {
-                    blacklist.add(i);
+        for (String string : sites.keySet()) {
+            changed = true;
+            String i = string;
+            if (!sites.get(i).removed) {
+                info.put(i, sites.get(i).value);
+            } else {
+                blacklist.add(i);
+            }
+        }
+        try {
+            LinkedList<String> history = readObject(Repository.getCurrentBranchFile(), LinkedList.class);
+            fatherId = history.getFirst();
+            File fatherFile = join(OBJECTS, fatherId);
+            Commit commit = readObject(fatherFile, Commit.class);
+            for (String i : commit.getInfo().keySet()) {
+                if (!blacklist.contains(i) && info.get(i) == null) {
+                    info.put(i, commit.getInfo().get(i));
                 }
             }
-        } catch (Exception ignored) {
-        } finally {
-            try {
-                LinkedList<String> history = readObject(Repository.getCurrentBranchFile(), LinkedList.class);
-                fatherId = history.getFirst();
-                File fatherFile = join(OBJECTS, fatherId);
-                Commit commit = readObject(fatherFile, Commit.class);
-                Iterator<String> iter = commit.getInfo().keySet().iterator();
-                while (iter.hasNext()) {
-                    String i = iter.next();
-                    if (!blacklist.contains(i) && info.get(i) == null) {
-                        info.put(i, commit.getInfo().get(i));
-                    }
-                }
-                material.add(fatherId);
-                material.addAll(info.values());
-                material.add(message);
-                material.add(date);
-            } catch (Exception e) {
-                material.add(message);
-                material.add(date);
+            if(merging){
+                LinkedList<String> secondHistory = readObject(join(HEADS, mergedBranch), LinkedList.class);
+                secondParentId = secondHistory.getFirst();
+                merge = true;
+                material.add(secondParentId);
             }
+            material.add(fatherId);
+            material.addAll(info.values());
+            material.add(message);
+            material.add(date);
+        } catch (Exception e) {
+            material.add(message);
+            material.add(date);
         }
         id = sha1(material);
         File commitFile = join(OBJECTS, id);
@@ -108,5 +109,13 @@ public class Commit implements Serializable {
 
     public String getFatherId(){
         return fatherId;
+    }
+
+    public String getSecondParentId(){
+        return secondParentId;
+    }
+
+    public boolean isMerging(){
+        return merge;
     }
 }

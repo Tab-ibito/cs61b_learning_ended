@@ -3,7 +3,6 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.invoke.SwitchPoint;
 import java.util.*;
 
 import static gitlet.Utils.*;
@@ -64,7 +63,7 @@ public class Repository {
                 MASTER.createNewFile();
                 writeObject(HEAD, "master");
                 writeObject(INDEX, new HashMap<String, Stage>());
-                Commit initialCommit = new Commit("initial commit");
+                Commit initialCommit = new Commit("initial commit", false, null);
                 LinkedList<String> history = new LinkedList<>();
                 history.addFirst(initialCommit.getId());
                 writeObject(MASTER, history);
@@ -82,7 +81,7 @@ public class Repository {
     }
 
     public static void addFile(String name, boolean removed) {
-        if(removed){
+        if (removed) {
             HashMap<String, Stage> sites;
             sites = readObject(INDEX, HashMap.class);
             String hash = getCurrentCommit().getInfo().get(name);
@@ -102,7 +101,7 @@ public class Repository {
         sites = readObject(INDEX, HashMap.class);
         sites.remove(name);
         writeObject(INDEX, sites);
-        if(commit.getInfo().containsKey(name) && hash.equals(commit.getInfo().get(name))){
+        if (commit.getInfo().containsKey(name) && hash.equals(commit.getInfo().get(name))) {
             return;
         }
         sites.put(name, new Stage(hash, removed));
@@ -117,7 +116,11 @@ public class Repository {
     }
 
     public static void commitFile(String msg) {
-        Commit commit = new Commit(msg);
+        commitFile(msg, false, null);
+    }
+
+    public static void commitFile(String msg, boolean merging, String mergingBranch) {
+        Commit commit = new Commit(msg, merging, mergingBranch);
         if (!commit.isChanged()) {
             System.out.println("No changes added to the commit.");
             System.exit(0);
@@ -140,8 +143,12 @@ public class Repository {
     }
 
     private static void printSingleCommit(Commit commit) {
+
         System.out.println("===");
         System.out.println("commit " + commit.getId());
+        if (commit.isMerging()) {
+            System.out.println("Merge: " + commit.getFatherId().substring(0, 7) + " " + commit.getSecondParentId().substring(0, 7));
+        }
         System.out.println("Date: " + commit.getDate());
         System.out.println(commit.getMessage());
         System.out.println();
@@ -198,16 +205,16 @@ public class Repository {
     private static Commit getCommit(String expectedId, File branch) {
         LinkedList<String> history = readObject(branch, LinkedList.class);
         String full = getFullUid(expectedId);
-        if(history.contains(full)){
+        if (history.contains(full)) {
             return getCommitById(full);
-        }else{
+        } else {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
         return null;
     }
 
-    private static String getFullUid (String shortened){
+    private static String getFullUid(String shortened) {
         String full = null;
         int count = 0;
         for (String objectId : plainFilenamesIn(OBJECTS)) {
@@ -225,7 +232,7 @@ public class Repository {
         }
         return full;
     }
-    
+
     private static Commit getCommit(String expectedId) {
         return getCommit(expectedId, getCurrentBranchFile());
     }
@@ -390,7 +397,7 @@ public class Repository {
                 System.exit(0);
             }
         }
-        for (String fileName : tracking){
+        for (String fileName : tracking) {
             File hiddenFile = join(CWD, fileName);
             hiddenFile.delete();
         }
@@ -440,7 +447,7 @@ public class Repository {
         LinkedList<String> history = new LinkedList<>();
         String pointer = target.getFatherId();
         history.addLast(target.getId());
-        while (pointer!=null) {
+        while (pointer != null) {
             history.addLast(pointer);
             Commit next = getCommitById(getFullUid(pointer));
             pointer = next.getFatherId();
@@ -452,21 +459,67 @@ public class Repository {
                 System.exit(0);
             }
         }
-        for (String i : target.getInfo().keySet()){
+        for (String i : target.getInfo().keySet()) {
             checkout(commitId, i);
         }
         writeObject(branch, history);
         writeObject(INDEX, new HashMap<String, Stage>());
     }
 
+    private static HashMap<String, Integer> getAllAncestors(String id) {
+        HashMap<String, Integer> res = new HashMap<>();
+        Queue<String> bfs = new ArrayDeque<>();
+        Queue<Integer> depth = new ArrayDeque<>();
+        bfs.add(id);
+        depth.add(0);
+        while (!bfs.isEmpty()) {
+            String pointer = bfs.remove();
+            Integer level = depth.remove();
+            res.put(pointer, level);
+            if (getCommitById(pointer).getFatherId() != null) {
+                bfs.add(getCommitById(pointer).getFatherId());
+                depth.add(level + 1);
+            }
+            if (getCommitById(id).getSecondParentId() != null) {
+                bfs.add(getCommitById(pointer).getSecondParentId());
+                depth.add(level + 1);
+            }
+        }
+        return res;
+    }
+
+    private static String getSplitCommit(String givenId, String currentId) {
+        String solution = null;
+        Integer level = null;
+        HashMap<String, Integer> currentAncestors = getAllAncestors(currentId);
+        Queue<String> bfs = new ArrayDeque<>();
+        bfs.add(givenId);
+        while (!bfs.isEmpty()) {
+            String pointer = bfs.remove();
+            String newFather = getCommitById(pointer).getFatherId();
+            String newSecondParent = getCommitById(pointer).getSecondParentId();
+            if (newFather != null) {
+                bfs.add(newFather);
+            }
+            if (newSecondParent != null) {
+                bfs.add(newSecondParent);
+            }
+            if (currentAncestors.containsKey(pointer) && (level == null || currentAncestors.get(pointer) < level)) {
+                solution = pointer;
+                level = currentAncestors.get(pointer);
+            }
+        }
+        return solution;
+    }
+
     public static void merge(String givenBranch) {
         String currentBranch = readObject(HEAD, String.class);
-        if(currentBranch.equals(givenBranch)){
+        if (currentBranch.equals(givenBranch)) {
             System.out.println("Cannot merge a branch with itself.");
             System.exit(0);
         }
         File givenFile = join(HEADS, givenBranch);
-        if(!givenFile.exists()){
+        if (!givenFile.exists()) {
             System.out.println("A branch with that name does not exist.");
             System.exit(0);
         }
@@ -474,17 +527,10 @@ public class Repository {
         LinkedList<String> givenHistory = readObject(givenFile, LinkedList.class);
         HashMap<String, String> currentCommitInfo = getCurrentCommit().getInfo();
         HashMap<String, String> givenCommitInfo = getCommitById(givenHistory.getFirst()).getInfo();
-        HashMap<String, String> splitCommitInfo = null;
-        Commit splitCommit = null;
-        HashMap<String, String> pool= new HashMap<>();
+        Commit splitCommit = getCommitById(getSplitCommit(givenHistory.getFirst(), getCurrentCommitId()));
+        HashMap<String, String> splitCommitInfo = splitCommit.getInfo();
+        HashMap<String, String> pool = new HashMap<>();
         boolean status = false;
-        for (String i : currentHistory) {
-            if (givenHistory.contains(i)) {
-                splitCommit=getCommitById(i);
-                splitCommitInfo = getCommitById(i).getInfo();
-                break;
-            }
-        }
         pool.putAll(currentCommitInfo);
         pool.putAll(givenCommitInfo);
         pool.putAll(splitCommitInfo);
@@ -496,47 +542,48 @@ public class Repository {
             }
         }
         HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
-        if(!sites.isEmpty()){
+        if (!sites.isEmpty()) {
             System.out.println("You have uncommitted changes.");
             System.exit(0);
         }
-        if(splitCommit.getId().equals(getCommitById(givenHistory.getFirst()).getId())){
+        if (splitCommit.getId().equals(getCommitById(givenHistory.getFirst()).getId())) {
             System.out.println("Given branch is an ancestor of the current branch.");
             System.exit(0);
         }
-        if(splitCommit.getId().equals(getCurrentCommitId())){
+        if (splitCommit.getId().equals(getCurrentCommitId())) {
+            reset(givenHistory.getFirst());
             System.out.println("Current branch fast-forwarded.");
             System.exit(0);
         }
         for (String i : pool.keySet()) {
-            boolean inSplit = in(i,splitCommitInfo);
+            boolean inSplit = in(i, splitCommitInfo);
             boolean inCurrent = in(i, currentCommitInfo);
             boolean inGiven = in(i, givenCommitInfo);
             boolean modifiedGiven = isModified(i, splitCommitInfo, givenCommitInfo);
             boolean modifiedCurrent = isModified(i, splitCommitInfo, currentCommitInfo);
-            boolean conflict = isConflict(i,givenCommitInfo,currentCommitInfo);
-            if (inSplit && inCurrent && inGiven && !modifiedCurrent && modifiedGiven){
+            boolean conflict = isConflict(i, givenCommitInfo, currentCommitInfo);
+            if (inSplit && inCurrent && inGiven && !modifiedCurrent && modifiedGiven) {
                 checkout(givenHistory.getFirst(), i);
                 addFile(i);
             }
-            if (inSplit && !inGiven && inCurrent && !modifiedCurrent){
+            if (inSplit && !inGiven && inCurrent && !modifiedCurrent) {
                 removeFile(i);
             }
-            if (inGiven && !inSplit && !inCurrent){
+            if (inGiven && !inSplit && !inCurrent) {
                 checkout(givenHistory.getFirst(), i);
                 addFile(i);
             }
-            if (!inSplit && conflict || modifiedGiven && modifiedCurrent && conflict || modifiedGiven && !inCurrent || modifiedCurrent && !inGiven){
+            if (!inSplit && conflict || modifiedGiven && modifiedCurrent && conflict || modifiedGiven && !inCurrent || modifiedCurrent && !inGiven) {
                 File conflictFile = join(CWD, i);
                 String givenIndex = givenCommitInfo.get(i);
                 String currentIndex = currentCommitInfo.get(i);
                 byte[] givenFileContent = new byte[0];
                 byte[] currentFileContent = new byte[0];
-                if(givenIndex != null){
+                if (givenIndex != null) {
                     File givenContent = join(OBJECTS, givenIndex);
                     givenFileContent = readContents(givenContent);
                 }
-                if(currentIndex != null){
+                if (currentIndex != null) {
                     File currentContent = join(OBJECTS, currentIndex);
                     currentFileContent = readContents(currentContent);
                 }
@@ -553,20 +600,20 @@ public class Repository {
             }
         }
         String msg = "Merged " + givenBranch + " into " + currentBranch + ".";
-        commitFile(msg);
+        commitFile(msg, true, givenBranch);
         if (status) {
             System.out.println("Encountered a merge conflict.");
         }
     }
 
-    public static void checkEnvironment(){
-        if (!GITLET_DIR.exists()){
+    public static void checkEnvironment() {
+        if (!GITLET_DIR.exists()) {
             System.out.println("Not in an initialized Gitlet directory.");
             System.exit(0);
         }
     }
 
-    private static boolean in(String i, HashMap<String, String> range){
+    private static boolean in(String i, HashMap<String, String> range) {
         return range.containsKey(i);
     }
 
