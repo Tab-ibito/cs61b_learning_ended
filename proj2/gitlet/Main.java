@@ -144,7 +144,7 @@ public class Main {
                     System.exit(0);
                 }
                 gitlet.Repository.checkEnvironment();
-                Repository.addRemote(args[1],args[2]);
+                Repository.addRemote(args[1], args[2]);
                 break;
             case "rm-remote":
                 if (args.length != 2) {
@@ -160,7 +160,7 @@ public class Main {
                     System.exit(0);
                 }
                 gitlet.Repository.checkEnvironment();
-                Repository.pushRemote(args[1],args[2]);
+                Repository.pushRemote(args[1], args[2]);
                 break;
             case "fetch":
                 if (args.length != 3) {
@@ -168,7 +168,7 @@ public class Main {
                     System.exit(0);
                 }
                 gitlet.Repository.checkEnvironment();
-                Repository.fetchRemote(args[1],args[2]);
+                Repository.fetchRemote(args[1], args[2]);
                 break;
             case "pull":
                 if (args.length != 3) {
@@ -176,7 +176,7 @@ public class Main {
                     System.exit(0);
                 }
                 gitlet.Repository.checkEnvironment();
-                Repository.pullRemote(args[1],args[2]);
+                Repository.pullRemote(args[1], args[2]);
                 break;
             default:
                 System.out.println("No command with that name exists.");

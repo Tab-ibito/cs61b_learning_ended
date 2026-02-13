@@ -60,7 +60,7 @@ public class Repository {
         File remotes;
         File heads;
 
-        Remote(String path){
+        Remote(String path) {
             try {
                 dir = join(CWD, path).getCanonicalFile();
             } catch (IOException e) {
@@ -342,7 +342,7 @@ public class Repository {
         System.out.println();
         System.out.println("=== Untracked Files ===");
         List<String> workingFiles = plainFilenamesIn(CWD);
-        if(workingFiles!=null){
+        if (workingFiles != null) {
             Collections.sort(workingFiles);
         }
         for (String i : workingFiles) {
@@ -362,10 +362,10 @@ public class Repository {
                 File working = join(CWD, i);
                 byte[] inp = readContents(working);
                 if (!sha1(inp).equals(commit.getInfo().get(i))) {
-                    result.add(i+" (modified)");
+                    result.add(i + " (modified)");
                 }
             } else if (!workingFiles.contains(i) && !getStagingFileNames().contains(i)) {
-                result.add(i+" (deleted)");
+                result.add(i + " (deleted)");
             }
         }
         HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
@@ -374,10 +374,10 @@ public class Repository {
                 File working = join(CWD, i);
                 byte[] inp = readContents(working);
                 if (!sha1(inp).equals(sites.get(i).value)) {
-                    result.add(i+" (modified)");
+                    result.add(i + " (modified)");
                 }
             } else if (!workingFiles.contains(i) && !sites.get(i).removed) {
-                result.add(i+" (deleted)");
+                result.add(i + " (deleted)");
             }
         }
         return result;
@@ -665,39 +665,40 @@ public class Repository {
 
     public static void addRemote(String name, String location) {
         HashMap<String, String> info = readObject(CONFIG, HashMap.class);
-        if(info.containsKey(name)){
+        if (info.containsKey(name)) {
             System.out.println("A remote with that name already exists.");
             System.exit(0);
         }
         info.put(name, location);
         writeObject(CONFIG, info);
     }
+
     public static void removeRemote(String name) {
         HashMap<String, String> info = readObject(CONFIG, HashMap.class);
         String removed = info.remove(name);
-        if(removed==null){
+        if (removed == null) {
             System.out.println("A remote with that name does not exist.");
             System.exit(0);
         }
         writeObject(CONFIG, info);
     }
 
-    private static Remote getRemoteEnv(String name){
+    private static Remote getRemoteEnv(String name) {
         HashMap<String, String> info = readObject(CONFIG, HashMap.class);
-        if(info.get(name)==null){
+        if (info.get(name) == null) {
             System.out.println("A remote with that name does not exist.");
             System.exit(0);
         }
         return new Remote(info.get(name));
     }
 
-    public static String getRemoteId(Remote env, String branch){
-        if(!env.dir.exists()){
+    public static String getRemoteId(Remote env, String branch) {
+        if (!env.dir.exists()) {
             System.out.println("Remote directory not found.");
             System.exit(0);
         }
         File branchFile = join(env.heads, branch);
-        if(!branchFile.exists()){
+        if (!branchFile.exists()) {
             System.out.println("That remote does not have that branch.");
             System.exit(0);
         }
@@ -705,20 +706,20 @@ public class Repository {
         return remoteHistory.getFirst();
     }
 
-    public static void pushRemote(String remoteName, String remoteBranchName){
+    public static void pushRemote(String remoteName, String remoteBranchName) {
         Remote env = getRemoteEnv(remoteName);
         File remoteBranchFile = join(HEADS, remoteName, remoteBranchName);
         String remoteId = getRemoteId(env, remoteBranchName);
-        if(!remoteBranchFile.exists()){
+        if (!remoteBranchFile.exists()) {
             System.out.println("Please pull down remote changes before pushing.");
             System.exit(0);
         }
         LinkedList<String> result = readObject(getCurrentBranchFile(), LinkedList.class);
         HashMap<String, Integer> ancestors = getAllAncestors(getCurrentCommitId());
-        if(ancestors.containsKey(getRemoteId(env, remoteBranchName))){
-            for (String i : ancestors.keySet()){
+        if (ancestors.containsKey(getRemoteId(env, remoteBranchName))) {
+            for (String i : ancestors.keySet()) {
                 uploadCommit(env, i);
-                for (String j : getCommitById(i).getInfo().values()){
+                for (String j : getCommitById(i).getInfo().values()) {
                     uploadFile(env, j);
                 }
             }
@@ -726,7 +727,7 @@ public class Repository {
         writeObject(join(env.heads, remoteBranchName), result);
     }
 
-    private static void copyRemoteFile(Remote env, String id){
+    private static void copyRemoteFile(Remote env, String id) {
         File originalFile = join(env.objects, id);
         File copyFile = join(OBJECTS, id);
         byte[] content = readContents(originalFile);
@@ -738,7 +739,7 @@ public class Repository {
         writeObject(copyFile, content);
     }
 
-    private static void copyRemoteCommit(Remote env, String id){
+    private static void copyRemoteCommit(Remote env, String id) {
         File originalFile = join(env.objects, id);
         File copyFile = join(OBJECTS, id);
         Commit content = readObject(originalFile, Commit.class);
@@ -750,7 +751,7 @@ public class Repository {
         writeObject(copyFile, content);
     }
 
-    private static void uploadFile(Remote env, String id){
+    private static void uploadFile(Remote env, String id) {
         File originalFile = join(OBJECTS, id);
         File copyFile = join(env.objects, id);
         byte[] content = readContents(originalFile);
@@ -762,7 +763,7 @@ public class Repository {
         writeObject(copyFile, content);
     }
 
-    private static void uploadCommit(Remote env, String id){
+    private static void uploadCommit(Remote env, String id) {
         File originalFile = join(OBJECTS, id);
         File copyFile = join(env.objects, id);
         Commit content = readObject(originalFile, Commit.class);
@@ -778,7 +779,7 @@ public class Repository {
         return readObject(join(env.objects, id), Commit.class);
     }
 
-    public static void fetchRemote(String remoteName, String remoteBranchName){
+    public static void fetchRemote(String remoteName, String remoteBranchName) {
         Remote env = getRemoteEnv(remoteName);
         String remoteId = getRemoteId(env, remoteBranchName);
         File remoteBranchDir = join(HEADS, remoteName);
@@ -803,14 +804,14 @@ public class Repository {
                 bfs.add(commit.getSecondParentId());
             }
             copyRemoteCommit(env, pointer);
-            for(String i : commit.getInfo().values()){
+            for (String i : commit.getInfo().values()) {
                 copyRemoteFile(env, i);
             }
         }
     }
 
-    public static void pullRemote(String remoteName, String remoteBranchName){
+    public static void pullRemote(String remoteName, String remoteBranchName) {
         fetchRemote(remoteName, remoteBranchName);
-        merge(remoteBranchName);
+        merge(remoteName + "/" + remoteBranchName);
     }
 }

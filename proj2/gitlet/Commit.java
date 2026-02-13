@@ -11,8 +11,8 @@ import static java.lang.String.format;
 
 /**
  * Represents a gitlet commit object.
- *
- *  does at a high level.
+ * <p>
+ * does at a high level.
  *
  * @author Tab_1bit0
  */
@@ -35,6 +35,7 @@ public class Commit implements Serializable {
     private String id;
     private boolean merge = false;
     private boolean changed = false;
+
     public Commit(String msg, boolean merging, String mergedBranch) {
         merge = merging;
         message = msg;
@@ -43,7 +44,7 @@ public class Commit implements Serializable {
         date = format(Locale.US, "%ta %tb %td %tT %tY %tz", time, time, time, time, time, time);
         List<Object> material = new ArrayList<>();
         List<String> blacklist = new ArrayList<>();
-            HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
+        HashMap<String, Stage> sites = readObject(INDEX, HashMap.class);
         for (String string : sites.keySet()) {
             changed = true;
             String i = string;
@@ -63,7 +64,7 @@ public class Commit implements Serializable {
                     info.put(i, commit.getInfo().get(i));
                 }
             }
-            if(merging){
+            if (merging) {
                 LinkedList<String> secondHistory = readObject(join(HEADS, mergedBranch), LinkedList.class);
                 secondParentId = secondHistory.getFirst();
                 merge = true;
@@ -107,15 +108,15 @@ public class Commit implements Serializable {
         return info;
     }
 
-    public String getFatherId(){
+    public String getFatherId() {
         return fatherId;
     }
 
-    public String getSecondParentId(){
+    public String getSecondParentId() {
         return secondParentId;
     }
 
-    public boolean isMerging(){
+    public boolean isMerging() {
         return merge;
     }
 }
