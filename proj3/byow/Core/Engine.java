@@ -14,8 +14,8 @@ import static java.lang.Math.min;
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 50;
-    public static final int HEIGHT = 50;
+    public static final int WIDTH = 80;
+    public static final int HEIGHT = 30;
     private static List<Room> rooms = new ArrayList<>();
 
     /**
@@ -115,7 +115,8 @@ public class Engine {
     private static boolean isConnected(TETile[][] world, Node start, Node end){
         Queue<Node> bfs = new ArrayDeque<>();
         bfs.add(start);
-        boolean[][] painted = new boolean[HEIGHT][WIDTH];
+        boolean[][] painted = new boolean[WIDTH][HEIGHT];
+        painted[start.x][start.y]=true;
         while (!bfs.isEmpty()){
             Node position = bfs.remove();
             if(position.x==end.x && position.y == end.y){
@@ -209,7 +210,7 @@ public class Engine {
         Queue<Node> bfs = new ArrayDeque<>();
         Node start = rooms.get(0).benchmark;
         bfs.add(start);
-        boolean[][] painted = new boolean[HEIGHT][WIDTH];
+        boolean[][] painted = new boolean[WIDTH][HEIGHT];
         while (!bfs.isEmpty()){
             Node position = bfs.remove();
             for(Node adjacent: position.cube()){
