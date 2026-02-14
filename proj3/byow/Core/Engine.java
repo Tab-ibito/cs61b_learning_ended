@@ -116,9 +116,7 @@ public class Engine {
         Queue<Node> bfs = new ArrayDeque<>();
         bfs.add(start);
         boolean[][] painted = new boolean[HEIGHT][WIDTH];
-        int count = 0;
         while (!bfs.isEmpty()){
-            count++;
             Node position = bfs.remove();
             if(position.x==end.x && position.y == end.y){
                 return true;
@@ -130,7 +128,6 @@ public class Engine {
                 }
             }
         }
-        System.out.println(count);
         return false;
     }
 
