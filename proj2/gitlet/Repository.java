@@ -556,7 +556,6 @@ public class Repository {
             System.out.println("A branch with that name does not exist.");
             System.exit(0);
         }
-        LinkedList<String> currentHistory = readObject(getCurrentBranchFile(), LinkedList.class);
         LinkedList<String> givenHistory = readObject(givenFile, LinkedList.class);
         HashMap<String, String> currentCommitInfo = getCurrentCommit().getInfo();
         HashMap<String, String> givenCommitInfo = getCommitById(givenHistory.getFirst()).getInfo();
