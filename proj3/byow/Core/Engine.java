@@ -1,12 +1,10 @@
 package byow.Core;
 
-import afu.org.checkerframework.checker.igj.qual.I;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
