@@ -193,7 +193,7 @@ public class Engine {
     }
 
     private static boolean checkRange(Node node){
-        return node.x>0 && node.x<WIDTH-1 && node.y>0 && node.y<HEIGHT-1;
+        return node.x>0 && node.x<WIDTH && node.y>0 && node.y<HEIGHT;
     }
 
     private static void roomGeneration(Random random,TETile[][] world){
