@@ -62,8 +62,8 @@ public class Engine {
         hallwayGeneration(random, world);
         finalWorldFrame = world;
         buildWalls(world);
-        ter.initialize(WIDTH, HEIGHT);
-        ter.renderFrame(world);
+        //ter.initialize(WIDTH, HEIGHT);
+        //ter.renderFrame(world);
         return finalWorldFrame;
 
     }
