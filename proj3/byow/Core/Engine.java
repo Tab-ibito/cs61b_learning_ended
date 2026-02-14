@@ -62,8 +62,8 @@ public class Engine {
         hallwayGeneration(random, world);
         finalWorldFrame = world;
         buildWalls(world);
-        //ter.initialize(WIDTH, HEIGHT);
-        //ter.renderFrame(world);
+        ter.initialize(WIDTH, HEIGHT);
+        ter.renderFrame(world);
         return finalWorldFrame;
 
     }
@@ -194,7 +194,7 @@ public class Engine {
     }
 
     private static boolean checkRange(Node node){
-        return node.x>0 && node.x<WIDTH && node.y>0 && node.y<HEIGHT;
+        return node.x>=0 && node.x<WIDTH && node.y>=0 && node.y<HEIGHT;
     }
 
     private static void roomGeneration(Random random,TETile[][] world){
@@ -233,12 +233,8 @@ public class Engine {
 
     private static void hallwayGeneration(Random random, TETile[][] world){
         Node[] access = new Node[rooms.size()];
-        for (Room room1 : rooms){
-            for (Room room2 : rooms){
-                if(!isConnected(world,room1.benchmark,room2.benchmark)){
-                    randomHallway(random, room1, room2, world);
-                }
-            }
+        for (Room room2 : rooms){
+            randomHallway(random, rooms.get(0), room2, world);
         }
     }
 }
