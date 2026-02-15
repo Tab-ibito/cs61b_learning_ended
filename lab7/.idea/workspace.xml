@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7b77d882-9c70-4c96-8719-83a00532916e" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/../proj2/gitlet/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/gitlet/Commit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/gitlet/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/gitlet/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/gitlet/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/gitlet/Repository.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="F:\cs61b\submission\cs61b_learning\library-sp21\javalib" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="39SjsSrUvdFK0u8ix3zKY8Ro9hf" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.TestBSTMap.containsKeyNullTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestBSTMap.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestBSTMap.sanityClearTest.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/cs61b/submission/cs61b_learning/lab7&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="JUnit.TestBSTMap.sanityClearTest">
+    <configuration name="TestBSTMap" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bstmap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="bstmap" />
+      <option name="MAIN_CLASS_NAME" value="bstmap.TestBSTMap" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestBSTMap.containsKeyNullTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bstmap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="bstmap" />
+      <option name="MAIN_CLASS_NAME" value="bstmap.TestBSTMap" />
+      <option name="METHOD_NAME" value="containsKeyNullTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestBSTMap.sanityClearTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bstmap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="bstmap" />
+      <option name="MAIN_CLASS_NAME" value="bstmap.TestBSTMap" />
+      <option name="METHOD_NAME" value="sanityClearTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TestBSTMap.sanityClearTest" />
+        <item itemvalue="JUnit.TestBSTMap" />
+        <item itemvalue="JUnit.TestBSTMap.containsKeyNullTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="7b77d882-9c70-4c96-8719-83a00532916e" name="更改" comment="" />
+      <created>1770269052421</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770269052421</updated>
+      <workItem from="1770269055237" duration="755000" />
+      <workItem from="1770696573855" duration="7456000" />
+      <workItem from="1770704810344" duration="110000" />
+      <workItem from="1770705804179" duration="32000" />
+      <workItem from="1770708483102" duration="5000" />
+      <workItem from="1770816338427" duration="18000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <condition expression="i==10" language="JAVA" />
+          <url>file://$PROJECT_DIR$/bstmap/TestBSTMap.java</url>
+          <line>27</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

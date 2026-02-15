@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d773e5ea-fe53-4e52-a720-e128e85ed224" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/hashmap/MyHashMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/hashmap/MyHashMap.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="F:\cs61b\submission\cs61b_learning\library-sp21\javalib" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="39T0nSGGbpDFgXztSNefRlr8o3d" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.TestMyHashMap.executor": "Run",
+    "JUnit.TestMyHashMap.functionalityTest.executor": "Run",
+    "JUnit.TestMyHashMap.sanityClearTest.executor": "Run",
+    "JUnit.TestMyHashMapExtra.testRemove.executor": "Run",
+    "JUnit.TestMyHashMapExtra.testRemoveThreeCases.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "F:/cs61b/submission/cs61b_learning/lab8",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "MavenSettings",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="JUnit.TestMyHashMap.sanityClearTest">
+    <configuration name="TestMyHashMap" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab8" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="hashmap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="hashmap" />
+      <option name="MAIN_CLASS_NAME" value="hashmap.TestMyHashMap" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestMyHashMapExtra.testRemove" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab8" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="hashmap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="hashmap" />
+      <option name="MAIN_CLASS_NAME" value="hashmap.TestMyHashMapExtra" />
+      <option name="METHOD_NAME" value="testRemove" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestMyHashMapExtra.testRemoveThreeCases" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab8" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="hashmap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="hashmap" />
+      <option name="MAIN_CLASS_NAME" value="hashmap.TestMyHashMapExtra" />
+      <option name="METHOD_NAME" value="testRemoveThreeCases" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestMyHashMap.functionalityTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab8" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="hashmap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="hashmap" />
+      <option name="MAIN_CLASS_NAME" value="hashmap.TestMyHashMap" />
+      <option name="METHOD_NAME" value="functionalityTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestMyHashMap.sanityClearTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab8" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="hashmap.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="hashmap" />
+      <option name="MAIN_CLASS_NAME" value="hashmap.TestMyHashMap" />
+      <option name="METHOD_NAME" value="sanityClearTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TestMyHashMap.sanityClearTest" />
+        <item itemvalue="JUnit.TestMyHashMap" />
+        <item itemvalue="JUnit.TestMyHashMapExtra.testRemoveThreeCases" />
+        <item itemvalue="JUnit.TestMyHashMapExtra.testRemove" />
+        <item itemvalue="JUnit.TestMyHashMap.functionalityTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="d773e5ea-fe53-4e52-a720-e128e85ed224" name="更改" comment="" />
+      <created>1770269052421</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770269052421</updated>
+      <workItem from="1770269055237" duration="755000" />
+      <workItem from="1770704921270" duration="876000" />
+      <workItem from="1770705837518" duration="2303000" />
+      <workItem from="1770708490884" duration="5875000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.AssertionError" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <condition expression="i==47" language="JAVA" />
+          <url>file://$PROJECT_DIR$/hashmap/TestMyHashMap.java</url>
+          <line>31</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

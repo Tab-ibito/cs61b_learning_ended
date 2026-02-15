@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="23cef7db-8fa1-4ca1-bb60-d130c46244ba" name="更改" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="F:\cs61b\submission\cs61b_learning\library-sp21\javalib" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="39IUB2GBdYP86gnIbwIwinXaymD" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.ArrayDequeTest.addIsEmptySizeTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArrayDequeTest.bigLLDequeTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArrayDequeTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ArrayDequeTest.test1.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArrayDequeTest.test2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinkedListDequeTest.addIsEmptySizeTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinkedListDequeTest.addRemoveTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinkedListDequeTest.bigLLDequeTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinkedListDequeTest.emptyNullReturnTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinkedListDequeTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinkedListDequeTest.multipleParamTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinkedListDequeTest.test2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinkedListDequeTest.test3.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestGuitarString.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestGuitarString.testTic.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/cs61b/submission/cs61b_learning/proj1&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
+    &quot;应用程序.GuitarHeroLite.executor&quot;: &quot;Run&quot;
+  }
+}</component>
+  <component name="RunManager" selected="JUnit.TestGuitarString.testTic">
+    <configuration name="ArrayDequeTest.test2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="deque.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="deque" />
+      <option name="MAIN_CLASS_NAME" value="deque.ArrayDequeTest" />
+      <option name="METHOD_NAME" value="test2" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LinkedListDequeTest.bigLLDequeTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="deque.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="deque" />
+      <option name="MAIN_CLASS_NAME" value="deque.LinkedListDequeTest" />
+      <option name="METHOD_NAME" value="bigLLDequeTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LinkedListDequeTest.test2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="deque.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="deque" />
+      <option name="MAIN_CLASS_NAME" value="deque.LinkedListDequeTest" />
+      <option name="METHOD_NAME" value="test2" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LinkedListDequeTest.test3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="deque.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="deque" />
+      <option name="MAIN_CLASS_NAME" value="deque.LinkedListDequeTest" />
+      <option name="METHOD_NAME" value="test3" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestGuitarString.testTic" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gh2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="gh2" />
+      <option name="MAIN_CLASS_NAME" value="gh2.TestGuitarString" />
+      <option name="METHOD_NAME" value="testTic" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TestGuitarString.testTic" />
+        <item itemvalue="JUnit.LinkedListDequeTest.test3" />
+        <item itemvalue="JUnit.LinkedListDequeTest.test2" />
+        <item itemvalue="JUnit.LinkedListDequeTest.bigLLDequeTest" />
+        <item itemvalue="JUnit.ArrayDequeTest.test2" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="23cef7db-8fa1-4ca1-bb60-d130c46244ba" name="更改" comment="" />
+      <created>1770269052421</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770269052421</updated>
+      <workItem from="1770269055237" duration="755000" />
+      <workItem from="1770382940825" duration="178000" />
+      <workItem from="1770383140130" duration="292000" />
+      <workItem from="1770383466924" duration="48000" />
+      <workItem from="1770383538609" duration="365000" />
+      <workItem from="1770383937912" duration="4965000" />
+      <workItem from="1770388937268" duration="17948000" />
+      <workItem from="1770443509713" duration="873000" />
+      <workItem from="1770444541192" duration="3983000" />
+      <workItem from="1770448549407" duration="60000" />
+      <workItem from="1770448775667" duration="3369000" />
+      <workItem from="1770452417831" duration="1636000" />
+      <workItem from="1770454267376" duration="2493000" />
+      <workItem from="1770456978614" duration="64000" />
+      <workItem from="1770457205033" duration="461000" />
+      <workItem from="1770457821101" duration="881000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/deque/ArrayDequeTest.java</url>
+          <line>90</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/deque/ArrayDequeTest.java</url>
+          <line>92</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/deque/ArrayDequeTest.java</url>
+          <line>91</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/deque/ArrayDequeTest.java</url>
+          <line>94</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/deque/ArrayDequeTest.java</url>
+          <line>95</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/deque/ArrayDequeTest.java</url>
+          <line>96</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/deque/ArrayDeque.java</url>
+          <line>19</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <condition expression="this instanceof java.lang.ArrayIndexOutOfBoundsException" language="JAVA" />
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
