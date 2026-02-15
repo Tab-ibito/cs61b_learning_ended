@@ -110,7 +110,8 @@ public class Engine {
         }
 
         public Node[] cube() {
-            return new Node[]{up(), down(), left(), right(), up().right(), up().left(), down().right(), down().left()};
+            return new Node[]{up(), down(), left(), right(),
+                    up().right(), up().left(), down().right(), down().left()};
         }
 
         public boolean equals(Node node) {
@@ -130,7 +131,12 @@ public class Engine {
             this.width = width;
             this.height = height;
             this.end = new Node(benchmark.x + width, benchmark.y + height);
-            this.corners = new Node[]{benchmark, new Node(benchmark.x + width, benchmark.y), end, new Node(benchmark.x, benchmark.y + height)};
+            this.corners = new Node[]{
+                    benchmark,
+                    new Node(benchmark.x + width, benchmark.y),
+                    end,
+                    new Node(benchmark.x, benchmark.y + height)
+            };
         }
 
         public boolean equals(Room room) {
@@ -151,7 +157,8 @@ public class Engine {
         }
 
         public boolean in(Node node) {
-            return benchmark.x <= node.x && node.x <= end.x && benchmark.y <= node.y && node.y <= end.y;
+            return benchmark.x <= node.x && node.x <= end.x
+                    && benchmark.y <= node.y && node.y <= end.y;
         }
     }
 
@@ -166,7 +173,10 @@ public class Engine {
     }
 
     private boolean checkPath(Node target) {
-        return checkRange(target) && !world[target.x][target.y].equals(Tileset.NOTHING) && !world[target.x][target.y].equals(Tileset.WALL) && reachable[target.x][target.y];
+        return checkRange(target)
+                && !world[target.x][target.y].equals(Tileset.NOTHING)
+                && !world[target.x][target.y].equals(Tileset.WALL)
+                && reachable[target.x][target.y];
     }
 
     private boolean checkPath(Node target, boolean[][] painted) {
@@ -252,6 +262,8 @@ public class Engine {
                 if (checkPath(player.right())) {
                     player.x += 1;
                 }
+                break;
+            default:
                 break;
         }
         paint(player, Tileset.AVATAR);
@@ -348,34 +360,40 @@ public class Engine {
     }
 
     private void randomHallway(Room start, Room end) {
-        Node startNode = new Node(start.benchmark.x + random.nextInt(start.width + 1), start.benchmark.y + random.nextInt(start.height + 1));
-        Node endNode = new Node(end.benchmark.x + random.nextInt(end.width + 1), end.benchmark.y + random.nextInt(end.height + 1));
+        Node startNode = new Node(start.benchmark.x + random.nextInt(start.width + 1),
+                start.benchmark.y + random.nextInt(start.height + 1));
+        Node endNode = new Node(end.benchmark.x + random.nextInt(end.width + 1),
+                end.benchmark.y + random.nextInt(end.height + 1));
         pen(startNode, endNode, Tileset.FLOWER);
     }
 
     private void hallwayGeneration() {
-        HashMap<Room, Room> access = new HashMap<>();
-        for (Room room : rooms) {
-            access.put(room, room);
-        }
-        for (Room parent : rooms) {
-            for (Room child : rooms) {
-                if (parent.contain(child)) {
-                    Room pointer = access.get(parent);
-                    access.put(child, pointer);
-                }
-            }
-        }
-        List<Room> result = new ArrayList<>();
-        for (Room room : access.values()) {
-            if (!result.contains(room)) {
-                result.add(room);
-            }
-        }
-        while (result.size() > 1) {
-            Room start = result.remove(0);
-            Room end = result.get(0);
-            randomHallway(start, end);
+//        HashMap<Room, Room> access = new HashMap<>();
+//        for (Room room : rooms) {
+//            access.put(room, room);
+//        }
+//        for (Room parent : rooms) {
+//            for (Room child : rooms) {
+//                if (parent.contain(child)) {
+//                    Room pointer = access.get(parent);
+//                    access.put(child, pointer);
+//                }
+//            }
+//        }
+//        List<Room> result = new ArrayList<>();
+//        for (Room room : access.values()) {
+//            if (!result.contains(room)) {
+//                result.add(room);
+//            }
+//        }
+//        while (result.size() > 1) {
+//            Room start = result.remove(0);
+//            Room end = result.get(0);
+//            randomHallway(start, end);
+//        }
+//    }
+        for (Room room2 : rooms) {
+            randomHallway(rooms.get(0), room2);
         }
     }
 }
