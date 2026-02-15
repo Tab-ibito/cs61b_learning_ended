@@ -20,15 +20,18 @@ public class Engine {
     public static final int HEIGHT = 30;
     private List<Room> rooms = new ArrayList<>();
     TETile[][] world = initialize();
+    boolean[][] reachable = new boolean[WIDTH][HEIGHT];
     Random random;
     Node player;
 
     static class Frame implements Serializable {
         TETile[][] world;
         Node player;
-        Frame(TETile[][] world, Node player){
+        boolean[][] reachable;
+        Frame(TETile[][] world, Node player, boolean[][] reachable){
             this.world = world;
             this.player = player;
+            this.reachable = reachable;
         }
     }
 
@@ -69,9 +72,9 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
         TETile[][] finalWorldFrame = null;
+        //ter.initialize(WIDTH, HEIGHT);
         readInput(input);
         finalWorldFrame = world;
-        //ter.initialize(WIDTH, HEIGHT);
         //ter.renderFrame(world);
         return finalWorldFrame;
     }
@@ -155,12 +158,14 @@ public class Engine {
         roomGeneration();
         hallwayGeneration();
         buildWalls();
-        player = randomNode();
+        do{
+            player = randomNode();
+        }while (!checkPath(player));
         world[player.x][player.y] = Tileset.AVATAR;
     }
 
     private boolean checkPath(Node target) {
-        return checkRange(target) && world[target.x][target.y] != Tileset.NOTHING && world[target.x][target.y] != Tileset.WALL;
+        return checkRange(target) && !world[target.x][target.y].equals(Tileset.NOTHING) && !world[target.x][target.y].equals(Tileset.WALL) && reachable[target.x][target.y];
     }
 
     private boolean checkPath(Node target, boolean[][] painted) {
@@ -202,8 +207,8 @@ public class Engine {
             for(int i=0;i<result.length();i++){
                 move(result.charAt(i));
             }
+            input = input.substring(operationMatcher.end());
         }
-        input = input.substring(operationMatcher.end());
         if(input.equalsIgnoreCase(":q")){
             savefile();
         }
@@ -216,6 +221,7 @@ public class Engine {
             Frame frame = (Frame) in.readObject();
             world = frame.world;
             player = frame.player;
+            reachable = frame.reachable;
             in.close();
             fileIn.close();
         } catch (IOException | ClassNotFoundException e) {
@@ -256,7 +262,7 @@ public class Engine {
             save.createNewFile();
             fileOut = new FileOutputStream("savefile.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(new Frame(world, player));
+            out.writeObject(new Frame(world, player, reachable));
             out.close();
             fileOut.close();
         } catch (IOException e) {
@@ -282,6 +288,7 @@ public class Engine {
     private void paint(Node start, Node end, TETile pattern) {
         for (int x = start.x; x <= end.x; x++) {
             for (int y = start.y; y <= end.y; y++) {
+                reachable[x][y] = true;
                 world[x][y] = pattern;
             }
         }
