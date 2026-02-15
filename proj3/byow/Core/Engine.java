@@ -73,10 +73,10 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
         TETile[][] finalWorldFrame = null;
-        ter.initialize(WIDTH, HEIGHT);
+        //ter.initialize(WIDTH, HEIGHT);
         readInput(input);
         finalWorldFrame = world;
-        ter.renderFrame(world);
+        //ter.renderFrame(world);
         return finalWorldFrame;
     }
 
