@@ -4,12 +4,14 @@ import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static byow.Core.RandomUtils.shuffle;
+import static java.lang.Math.*;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -19,6 +21,16 @@ public class Engine {
     private List<Room> rooms = new ArrayList<>();
     TETile[][] world = initialize();
     Random random;
+    Node player;
+
+    static class Frame implements Serializable {
+        TETile[][] world;
+        Node player;
+        Frame(TETile[][] world, Node player){
+            this.world = world;
+            this.player = player;
+        }
+    }
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -32,18 +44,18 @@ public class Engine {
      * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
      * behave exactly as if the user typed these characters into the engine using
      * interactWithKeyboard.
-     *
+     * <p>
      * Recall that strings ending in ":q" should cause the game to quite save. For example,
      * if we do interactWithInputString("n123sss:q"), we expect the game to run the first
      * 7 commands (n123sss) and then quit and save. If we then do
      * interactWithInputString("l"), we should be back in the exact same state.
-     *
+     * <p>
      * In other words, both of these calls:
-     *   - interactWithInputString("n123sss:q")
-     *   - interactWithInputString("lww")
-     *
+     * - interactWithInputString("n123sss:q")
+     * - interactWithInputString("lww")
+     * <p>
      * should yield the exact same world state as:
-     *   - interactWithInputString("n123sssww")
+     * - interactWithInputString("n123sssww")
      *
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
@@ -57,184 +69,304 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
         TETile[][] finalWorldFrame = null;
-        String seed = getSeed(input);
-        random = new Random(Long.parseLong(seed));
-        roomGeneration();
-        hallwayGeneration();
-        buildWalls();
+        readInput(input);
         finalWorldFrame = world;
-        //ter.initialize(WIDTH, HEIGHT);
-        //ter.renderFrame(world);
+        ter.initialize(WIDTH, HEIGHT);
+        ter.renderFrame(world);
         return finalWorldFrame;
     }
 
-    static class Node{
+    static class Node implements Serializable {
         int x;
         int y;
-        Node(int x, int y){
+
+        Node(int x, int y) {
             this.x = x;
             this.y = y;
         }
-        public Node right(){
-            return new Node(x+1, y);
+
+        public Node right() {
+            return new Node(x + 1, y);
         }
-        public Node left(){
-            return new Node(x-1, y);
+
+        public Node left() {
+            return new Node(x - 1, y);
         }
-        public Node up(){
-            return new Node(x, y+1);
+
+        public Node up() {
+            return new Node(x, y + 1);
         }
-        public Node down(){
-            return new Node(x, y-1);
+
+        public Node down() {
+            return new Node(x, y - 1);
         }
-        public Node[] directions(){
+
+        public Node[] directions() {
             return new Node[]{up(), down(), left(), right()};
         }
-        public Node[] cube(){
-            return new Node[]{up(), down(), left(), right(), up().right(),up().left(),down().right(),down().left()};
+
+        public Node[] cube() {
+            return new Node[]{up(), down(), left(), right(), up().right(), up().left(), down().right(), down().left()};
+        }
+
+        public boolean equals(Node node) {
+            return x == node.x && y == node.y;
         }
     }
 
-    static class Room{
+    static class Room {
         Node benchmark;
         Node end;
         int width;
         int height;
-        Room(Node benchmark, int width, int height){
+        Node[] corners;
+
+        Room(Node benchmark, int width, int height) {
             this.benchmark = benchmark;
             this.width = width;
             this.height = height;
-            this.end = new Node(benchmark.x+width, benchmark.y+height);
+            this.end = new Node(benchmark.x + width, benchmark.y + height);
+            this.corners = new Node[]{benchmark, new Node(benchmark.x + width, benchmark.y), end, new Node(benchmark.x, benchmark.y + height)};
         }
-    }
 
-    private boolean checkPath(Node target, boolean[][] painted){
-        return checkRange(target) && world[target.x][target.y] != Tileset.NOTHING && world[target.x][target.y] != Tileset.WALL && !painted[target.x][target.y];
-    }
+        public boolean equals(Room room) {
+            return benchmark.equals(room.benchmark) && end.equals(room.end);
+        }
 
-    private boolean isConnected(Node start, Node end){
-        Queue<Node> bfs = new ArrayDeque<>();
-        bfs.add(start);
-        boolean[][] painted = new boolean[WIDTH][HEIGHT];
-        painted[start.x][start.y]=true;
-        while (!bfs.isEmpty()){
-            Node position = bfs.remove();
-            if(position.x==end.x && position.y == end.y){
-                return true;
-            }
-            for(Node adjacent: position.directions()){
-                if(checkPath(adjacent,painted)){
-                    painted[adjacent.x][adjacent.y]=true;
-                    bfs.add(adjacent);
+        public boolean contain(Room room) {
+            for (Node corner : room.corners) {
+                if (in(corner)) {
+                    for (Node adjacent : corner.directions()) {
+                        if (checkRange(adjacent) && in(adjacent)) {
+                            return true;
+                        }
+                    }
                 }
             }
+            return false;
         }
-        return false;
+
+        public boolean in(Node node) {
+            return benchmark.x <= node.x && node.x <= end.x && benchmark.y <= node.y && node.y <= end.y;
+        }
     }
 
-    private Node randomNode(Random random){
-        int newX = random.nextInt(WIDTH-2)+1;
-        int newY = random.nextInt(HEIGHT-2)+1;
+    private void worldGeneration(){
+        roomGeneration();
+        hallwayGeneration();
+        buildWalls();
+        player = randomNode();
+        world[player.x][player.y] = Tileset.AVATAR;
+    }
+
+    private boolean checkPath(Node target) {
+        return checkRange(target) && world[target.x][target.y] != Tileset.NOTHING && world[target.x][target.y] != Tileset.WALL;
+    }
+
+    private boolean checkPath(Node target, boolean[][] painted) {
+        return checkPath(target) && !painted[target.x][target.y];
+    }
+
+    private Node randomNode() {
+        int newX = random.nextInt(WIDTH - 2) + 1;
+        int newY = random.nextInt(HEIGHT - 2) + 1;
         return new Node(newX, newY);
     }
 
-    private Room randomRoom(Random random){
-        Node benchmark = randomNode(random);
-        int w = min(random.nextInt(5)+5,max(0, WIDTH - benchmark.x - 2));
-        int h = min(random.nextInt(5)+5,max(0, HEIGHT - benchmark.y - 2));
+    private Room randomRoom() {
+        Node benchmark = randomNode();
+        int w = min(random.nextInt(5) + 5, max(0, WIDTH - benchmark.x - 2));
+        int h = min(random.nextInt(5) + 5, max(0, HEIGHT - benchmark.y - 2));
         return new Room(benchmark, w, h);
     }
 
-    private String getSeed(String input){
-        Pattern pattern = Pattern.compile("[Nn]([0-9]+)[Ss]");
-        Matcher matcher = pattern.matcher(input);
-        matcher.matches();
-        String result = matcher.group(1);
-        return result.substring(1, result.length()-1);
+    private void readInput(String input) {
+        Pattern load = Pattern.compile("^l");
+        Matcher loadMatcher = load.matcher(input);
+        Pattern seed = Pattern.compile("[Nn]([0-9]+)[Ss]");
+        Matcher seedMatcher = seed.matcher(input);
+        if (loadMatcher.find()) {
+            loadFile();
+            input = input.substring(loadMatcher.end());
+        }
+        if (seedMatcher.find()) {
+            String result = seedMatcher.group(1);
+            random = new Random(Long.parseLong(result.substring(1, result.length() - 1)));
+            worldGeneration();
+            input = input.substring(seedMatcher.end());
+        }
+        Pattern operation = Pattern.compile("([WASDwasd]+)");
+        Matcher operationMatcher = operation.matcher(input);
+        if (operationMatcher.find()) {
+            String result = operationMatcher.group(1).toLowerCase();
+            for(int i=0;i<result.length();i++){
+                move(result.charAt(i));
+            }
+        }
+        input = input.substring(operationMatcher.end());
+        if(input.equalsIgnoreCase(":q")){
+            savefile();
+        }
     }
 
-    private static TETile[][] initialize(){
+    private void loadFile(){
+        try {
+            FileInputStream fileIn = new FileInputStream("savefile.txt");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            Frame frame = (Frame) in.readObject();
+            world = frame.world;
+            player = frame.player;
+            in.close();
+            fileIn.close();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void move(char op){
+        switch (op){
+            case 'w' :
+                if(checkPath(player.up())){
+                    player.y+=1;
+                }
+                break;
+            case 'a':
+                if(checkPath(player.left())){
+                    player.x-=1;
+                }
+                break;
+            case 's':
+                if(checkPath(player.down())){
+                    player.y-=1;
+                }
+                break;
+            case 'd':
+                if(checkPath(player.right())){
+                    player.x+=1;
+                }
+                break;
+        }
+        paint(player, Tileset.AVATAR);
+    }
+
+    private void savefile(){
+        File save = new File("savefile.txt");
+        FileOutputStream fileOut;
+        try {
+            save.createNewFile();
+            fileOut = new FileOutputStream("savefile.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(new Frame(world, player));
+            out.close();
+            fileOut.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private static TETile[][] initialize() {
         TETile[][] newWorld = new TETile[WIDTH][HEIGHT];
-        for(int x = 0; x<WIDTH; x++){
-            for (int y = 0; y<HEIGHT; y++){
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
                 newWorld[x][y] = Tileset.NOTHING;
             }
         }
         return newWorld;
     }
-    private void paint(Node point, TETile pattern){
+
+    private void paint(Node point, TETile pattern) {
         paint(point, point, pattern);
     }
 
-    private void paint(Node start, Node end, TETile pattern){
-        for(int x = start.x; x<=end.x; x++){
-            for(int y = start.y; y<=end.y;y++){
+    private void paint(Node start, Node end, TETile pattern) {
+        for (int x = start.x; x <= end.x; x++) {
+            for (int y = start.y; y <= end.y; y++) {
                 world[x][y] = pattern;
             }
         }
     }
 
-    private void pen(Node start, Node end, TETile pattern){
+    private void pen(Node start, Node end, TETile pattern) {
         boolean style = random.nextBoolean();
-        if(style){
-            for(int i = min(start.x, end.x); i<=max(start.x, end.x); i++){
-                paint(new Node(i, start.y),pattern);
+        if (style) {
+            for (int i = min(start.x, end.x); i <= max(start.x, end.x); i++) {
+                paint(new Node(i, start.y), pattern);
             }
-            for(int j = min(start.y,end.y); j<=max(start.y, end.y); j++){
+            for (int j = min(start.y, end.y); j <= max(start.y, end.y); j++) {
                 paint(new Node(end.x, j), pattern);
             }
-        }else{
-            for(int i = min(start.y, end.y); i<=max(start.y, end.y); i++){
+        } else {
+            for (int i = min(start.y, end.y); i <= max(start.y, end.y); i++) {
                 paint(new Node(start.x, i), pattern);
             }
-            for(int j = min(start.x,end.x); j<=max(start.x, end.x); j++){
+            for (int j = min(start.x, end.x); j <= max(start.x, end.x); j++) {
                 paint(new Node(j, end.y), pattern);
             }
         }
     }
 
-    private boolean checkRange(Node node){
-        return node.x>=0 && node.x<WIDTH && node.y>=0 && node.y<HEIGHT;
+    private static boolean checkRange(Node node) {
+        return node.x >= 0 && node.x < WIDTH && node.y >= 0 && node.y < HEIGHT;
     }
 
-    private void roomGeneration(){
-        int roomNum = random.nextInt(20)+15;
-        for (int i=0;i<roomNum;i++){
-            Room room = randomRoom(random);
+    private void roomGeneration() {
+        int roomNum = random.nextInt(20) + 15;
+        for (int i = 0; i < roomNum; i++) {
+            Room room = randomRoom();
             rooms.add(room);
             paint(room.benchmark, room.end, Tileset.FLOWER);
         }
     }
 
-    private void buildWalls(){
+    private void buildWalls() {
         Queue<Node> bfs = new ArrayDeque<>();
         Node start = rooms.get(0).benchmark;
         bfs.add(start);
         boolean[][] painted = new boolean[WIDTH][HEIGHT];
-        while (!bfs.isEmpty()){
+        while (!bfs.isEmpty()) {
             Node position = bfs.remove();
-            for(Node adjacent: position.cube()){
-                if(checkRange(adjacent) && world[adjacent.x][adjacent.y].equals(Tileset.NOTHING)){
+            for (Node adjacent : position.cube()) {
+                if (checkRange(adjacent) && world[adjacent.x][adjacent.y].equals(Tileset.NOTHING)) {
                     world[adjacent.x][adjacent.y] = Tileset.WALL;
                 }
-                if(checkPath(adjacent,painted)){
-                    painted[adjacent.x][adjacent.y]=true;
+                if (checkPath(adjacent, painted)) {
+                    painted[adjacent.x][adjacent.y] = true;
                     bfs.add(adjacent);
                 }
             }
         }
     }
 
-    private void randomHallway(Room start, Room end){
-        Node startNode = new Node(start.benchmark.x+random.nextInt(start.width+1),start.benchmark.y + random.nextInt(start.height+1));
-        Node endNode = new Node(end.benchmark.x+random.nextInt(end.width+1),end.benchmark.y + random.nextInt(end.height+1));
+    private void randomHallway(Room start, Room end) {
+        Node startNode = new Node(start.benchmark.x + random.nextInt(start.width + 1), start.benchmark.y + random.nextInt(start.height + 1));
+        Node endNode = new Node(end.benchmark.x + random.nextInt(end.width + 1), end.benchmark.y + random.nextInt(end.height + 1));
         pen(startNode, endNode, Tileset.FLOWER);
     }
 
-    private void hallwayGeneration(){
-        Node[] access = new Node[rooms.size()];
-        for (Room room2 : rooms){
-            randomHallway(rooms.get(0), room2);
+    private void hallwayGeneration() {
+        HashMap<Room, Room> access = new HashMap<>();
+        for (Room room : rooms) {
+            access.put(room, room);
+        }
+        for (Room parent : rooms) {
+            for (Room child : rooms) {
+                if (parent.contain(child)) {
+                    Room pointer = access.get(parent);
+                    access.put(child, pointer);
+                }
+            }
+        }
+        List<Room> result = new ArrayList<>();
+        for (Room room : access.values()) {
+            if (!result.contains(room)) {
+                result.add(room);
+            }
+        }
+        while (result.size() > 1) {
+            Room start = result.remove(0);
+            Room end = result.get(0);
+            randomHallway(start, end);
         }
     }
 }
