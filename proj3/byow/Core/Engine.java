@@ -5,12 +5,10 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static byow.Core.RandomUtils.shuffle;
 import static java.lang.Math.*;
 
 public class Engine {
@@ -28,10 +26,13 @@ public class Engine {
         TETile[][] world;
         Node player;
         boolean[][] reachable;
-        Frame(TETile[][] world, Node player, boolean[][] reachable){
+        Random random;
+
+        Frame(TETile[][] world, Node player, boolean[][] reachable, Random random) {
             this.world = world;
             this.player = player;
             this.reachable = reachable;
+            this.random = random;
         }
     }
 
@@ -72,10 +73,10 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
         TETile[][] finalWorldFrame = null;
-        //ter.initialize(WIDTH, HEIGHT);
+        ter.initialize(WIDTH, HEIGHT);
         readInput(input);
         finalWorldFrame = world;
-        //ter.renderFrame(world);
+        ter.renderFrame(world);
         return finalWorldFrame;
     }
 
@@ -154,13 +155,13 @@ public class Engine {
         }
     }
 
-    private void worldGeneration(){
+    private void worldGeneration() {
         roomGeneration();
         hallwayGeneration();
         buildWalls();
-        do{
+        do {
             player = randomNode();
-        }while (!checkPath(player));
+        } while (!checkPath(player));
         world[player.x][player.y] = Tileset.AVATAR;
     }
 
@@ -204,17 +205,17 @@ public class Engine {
         Matcher operationMatcher = operation.matcher(input);
         if (operationMatcher.find()) {
             String result = operationMatcher.group(1).toLowerCase();
-            for(int i=0;i<result.length();i++){
+            for (int i = 0; i < result.length(); i++) {
                 move(result.charAt(i));
             }
             input = input.substring(operationMatcher.end());
         }
-        if(input.equalsIgnoreCase(":q")){
+        if (input.equalsIgnoreCase(":q")) {
             savefile();
         }
     }
 
-    private void loadFile(){
+    private void loadFile() {
         try {
             FileInputStream fileIn = new FileInputStream("savefile.txt");
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -222,6 +223,7 @@ public class Engine {
             world = frame.world;
             player = frame.player;
             reachable = frame.reachable;
+            random = frame.random;
             in.close();
             fileIn.close();
         } catch (IOException | ClassNotFoundException e) {
@@ -229,40 +231,40 @@ public class Engine {
         }
     }
 
-    private void move(char op){
-        switch (op){
-            case 'w' :
-                if(checkPath(player.up())){
-                    player.y+=1;
+    private void move(char op) {
+        switch (op) {
+            case 'w':
+                if (checkPath(player.up())) {
+                    player.y += 1;
                 }
                 break;
             case 'a':
-                if(checkPath(player.left())){
-                    player.x-=1;
+                if (checkPath(player.left())) {
+                    player.x -= 1;
                 }
                 break;
             case 's':
-                if(checkPath(player.down())){
-                    player.y-=1;
+                if (checkPath(player.down())) {
+                    player.y -= 1;
                 }
                 break;
             case 'd':
-                if(checkPath(player.right())){
-                    player.x+=1;
+                if (checkPath(player.right())) {
+                    player.x += 1;
                 }
                 break;
         }
         paint(player, Tileset.AVATAR);
     }
 
-    private void savefile(){
+    private void savefile() {
         File save = new File("savefile.txt");
         FileOutputStream fileOut;
         try {
             save.createNewFile();
             fileOut = new FileOutputStream("savefile.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(new Frame(world, player, reachable));
+            out.writeObject(new Frame(world, player, reachable, random));
             out.close();
             fileOut.close();
         } catch (IOException e) {
