@@ -71,8 +71,8 @@ public class Engine {
         TETile[][] finalWorldFrame = null;
         readInput(input);
         finalWorldFrame = world;
-        ter.initialize(WIDTH, HEIGHT);
-        ter.renderFrame(world);
+        //ter.initialize(WIDTH, HEIGHT);
+        //ter.renderFrame(world);
         return finalWorldFrame;
     }
 
